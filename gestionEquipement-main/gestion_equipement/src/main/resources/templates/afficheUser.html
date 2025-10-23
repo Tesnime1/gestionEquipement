@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>utilisateur</title>
+</head>
+<body>
+    <div class="content_main">
+        <div><button type="button" onclick="openModal('/AfficheAddUser')">Ajouter Utilisateur</button></div>
+        <!-- Popup -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <div class="nav-popup">  
+    <h4> Ajouter un utilisateur</h4>
+    <span class="close" onclick="closeModal()">&times;</span>
+    </div>
+    <div id="modal-body">
+      <!-- contenu du formulaire chargé ici -->
+    </div>
+  </div>
+</div>
+    <div class="Table_container mt-4">
+    <table id="Table" class="table table-bordered table-striped mt-3" style="width:100%">
+        <thead class="table-dark">
+            <tr>
+                <th>Nom </th>
+                <th>role </th>
+                <th>modifier </th>                      
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rempli via JavaScript -->
+        </tbody>
+    </table>
+</div>
+ <div id="modalEdit" class="modal">
+        <div class="modal-content">
+            <div class="nav-popup">  
+                <h4>Modifier utilisateur</h4>
+                <span class="close" onclick="closePopupModifierUser('modalEdit')">&times;</span>
+            </div>
+            <div id="modalEdit-body">
+                <label for="">Nouveau mot de passe</label>
+                <input type="password" id="newPassword">
+      <button type="button" class="updateMotdePass">Modifier</button>
+            </div>
+        </div>
+    </div>  
+</div>
+
+ 
+
+</body>
+</html>

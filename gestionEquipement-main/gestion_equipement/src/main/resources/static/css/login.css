@@ -1,0 +1,113 @@
+*{
+    padding:0 ;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    
+}
+body{
+    width: 100vw;
+    height: 100vh;
+  
+
+}
+ .form-login{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(39 37 37 / 17%);
+    padding: 20px;
+    border-radius: 10px;
+    width: 25vw;
+} 
+.form-add {
+    display: flex;
+    flex-direction: column;
+    background-color: #d5d3c61f;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100vw;
+    height: auto;         /* prend la hauteur de son contenu */
+    align-self: flex-start; /* évite qu’il s’étire dans le parent flex */
+}
+
+select,input {
+    width: 85% !important;
+    padding: 10px !important;
+    margin-top: 5px !important;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+    border-radius: 4px !important;
+ border:  1px solid rgba(0, 0, 0, 0.1) !important;
+   
+}
+ form button[type=submit] {
+    margin: 10px;
+    width: 90%;
+    padding: 10px;
+    background-color: #0054a6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+}
+ form button[type=button] {
+    margin: 10px;
+    width: 90%;
+    padding: 10px;
+    background-color: #198754;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+}
+.container{
+
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+justify-content: center;
+}
+.container-add{
+   
+    display: flex;
+    width: 95%;
+    max-width: 100%;
+    justify-content: center;
+    align-items: flex-start; /* le form reste en haut */
+    padding: 1vw;          /* un peu d’air autour */
+
+
+}
+.ecran ,.pc,.imprimante{
+    display: flex;
+    flex-direction: column;
+}
+#fiche-container{
+    display: flex;
+    flex-direction: column;
+}
+.label-input{
+    border: none !important;
+    box-shadow: none !important;
+    width:50%;
+    font-weight: 550;
+}
+/* Style personnalisé pour Select2 */
+        .select2-container--default .select2-selection--single {
+            margin-top: 1rem;
+            padding: 6px 12px;
+           box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+    border-radius: 4px !important;
+ border:  1px solid rgba(0, 0, 0, 0.1) !important;
+
+        }
+     .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 66px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 20px;
+        }    
+       
+        

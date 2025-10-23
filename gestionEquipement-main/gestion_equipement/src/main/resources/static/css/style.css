@@ -1,0 +1,291 @@
+*{
+    padding:0 ;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    
+}
+body{
+    width: 100vw;
+    height: 100vh;
+
+}
+.main_container{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+aside 
+{
+  background-color: #fcfcfc6b;
+  height: 100vh;        /* prend toute la hauteur de l’écran */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.3s ease; /* animation ouverture/fermeture */
+  padding: 5px;
+  border-right: 2px solid #dcdcdcf7;
+  box-shadow: 0 0 2px rgba(141, 141, 141, 0.2) !important;
+  width: 20vw;
+}
+
+nav{ 
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+a{
+display: flex;
+align-items: center;
+gap: 1vw;
+padding: 1vw;  
+text-decoration: none !important;
+color: rgb(20, 20, 20) !important;
+    background-color: #f8f8f877;
+
+ 
+} 
+a:hover{
+    background-color: #f8f8f877;
+    border: 1px solid rgba(221, 221, 212, 0.637);
+   border-radius: 5px;
+   box-shadow: 0 0 2px rgba(141, 141, 141, 0.2) !important;
+ }
+
+   .load-page:hover{
+    border: 1px solid rgba(221, 221, 212, 0.637);
+   border-radius: 5px;
+   font-weight: 600;}
+main{
+     flex: 1;
+     height: 95%; 
+     width: 95%;              /* pleine largeur */
+     max-width: 100%;
+     overflow-y: auto;       /* scroll vertical seulement ici */
+     padding: 1rem;          /* un peu de marge */
+     box-sizing: border-box; /* éviter débordement */
+     overflow-x: hidden;
+    background-color: #f9f9f2a3;
+}
+.detailS,
+.detailE,
+.detailA{
+    display: none;
+
+}
+.detailS a, .detailE a, .detailA a {
+  text-decoration: none;
+  padding: 8px 5px;
+  margin: 2px;
+  background-color: rgba(255, 255, 255, 74%); ;
+
+}
+img{
+    width: 30px;
+    height:30px;
+}
+  /* --- Style popup --- */
+    .modal {
+      display: none; /* caché par défaut */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5); /* fond sombre */
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #ffffff;
+      border-radius: 5px;
+      width: 70% !important;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      overflow-x: hidden;
+      font-weight: 550;
+     
+    }
+    .close {
+      float: right;
+      font-size: 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .content_main{
+        display: flex;
+        flex-direction: column;
+        gap: 2vw;
+    }
+
+#Table th,
+#TableEquipement th,
+#TableEquipementProprietaire th,
+#TableEquipementHistorique th ,
+#TableParValeur th{
+  background-color: #ffffff;  
+  color: rgb(0, 0, 0);
+  text-align: center;
+  padding: 2px;
+   border: 1px solid #8080801c !important;
+
+}
+.form-control{
+  width: auto !important;
+}
+
+#Table td,
+#TableEquipement td ,
+#TableEquipementProprietaire td,
+#TableEquipementHistorique td,
+#TableParValeur td{
+  padding: 5px 5px;
+  text-align: center;
+  border: 1px solid #8080801c !important;
+}
+
+#Table tr:nth-child(even) ,
+#TableParValeur tr:nth-child(even){
+  background-color: #f9f9f9; /* alternance de lignes */
+}
+
+#Table tr:hover,
+#TableEquipement tr:hover,
+#TableEquipementHistorique tr:hover,
+#TableParValeur tr:hover{
+  background-color: #f1f1f1; /* effet survol */
+}
+
+#Table ,
+#TableEquipement,
+#TableEquipementProprietaire,
+#TableEquipementHistorique,
+#TableParValeur {
+    width: 80% !important;
+}
+
+button{
+    border-radius: 0;
+    border: 1px solid rgb(216, 216, 216);
+    background-color: white;
+    padding: 5px;
+    font-size: 16px;
+    box-shadow: 0 2px 4px rgba(207, 207, 207, 0.2);
+
+}
+.menu{
+    border-bottom: 1px solid black;
+    margin:5px 5px;
+    padding-bottom: 20px;
+}
+.nav-popup {
+  display: flex;
+  flex-direction: row;        /* en ligne */
+  align-items: center;        /* centrer verticalement */
+  justify-content: space-between; /* titre à gauche / bouton à droite */
+  background-color: #5ea1a173;
+  padding: 1vw;
+}
+
+.nav-popup h4 {
+  margin: 0;                 /* évite le décalage vertical */
+  text-align: center;        /* centre le texte si besoin */
+  flex: 1;                   /* prend tout l’espace dispo */
+}
+
+.nav-popup .close {
+  cursor: pointer;
+  font-size: 1.5rem;
+  margin-left: auto;         /* pousse le bouton à droite */
+}
+
+.row{
+  margin-left: 0 !important;
+}
+*,
+*::before,
+*::after {
+  box-sizing:inherit !important;
+}
+.selectGroupe select ,
+#ficheTechContainer select ,#filialeDetailsContainer select{
+   
+    padding: 10px;
+    margin-top: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1) !important;
+    border-radius: 4px;
+    border:  1px solid rgba(0, 0, 0, 0.1) !important;
+
+}
+.selectGroupe select {
+width: auto;
+}
+#ficheTechContainer select ,#filialeDetailsContainer select{
+    width: 10vw;
+    
+
+}
+.selectGroupe label{
+  font-weight: 600;
+}
+#ficheTechContainer label ,#filialeDetailsContainer label
+{
+font-weight: 600;
+margin-right: 1rem;
+width: 100px;
+
+  }
+.selectGroupe{
+  display: flex;
+  align-items: center;
+  gap: 5%;
+}
+#ficheTechContainer,#filialeDetailsContainer{
+  display: grid;
+  align-items: center; /* aligne verticalement */
+
+}
+
+.fiche-row{
+    display: flex;
+    align-items: center;
+}
+.rechercheContainer{
+  padding: 2vw;
+border:  1px solid rgba(0, 0, 0, 0.1) !important;
+}
+#newPassword {
+    width: 85%;
+    padding: 10px;
+    margin-top: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+    border-radius: 4px;
+ border:  1px solid rgba(0, 0, 0, 0.1) !important;
+   
+}
+#modalEdit-body{
+  padding: 2vw;
+}
+  .proprietaireDetailInput {
+    display: none;
+    margin: 1%;
+    flex-wrap: wrap; 
+  }
+   .proprietaireDetailInput input {
+    background-color: #ffea8226;
+    width: 85% !important;
+    padding: 10px !important;
+    margin-top: 5px !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+    border-radius: 4px !important;
+    border:  1px solid rgba(0, 0, 0, 0.1) !important;
+   
+  }
+.detailRecherchefield{
+  display: grid;
+  grid-template-columns:  1fr 1fr ; /* 2 colonnes égales */
+
+}

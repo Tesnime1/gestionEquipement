@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="/css/style.css">
+    <title>service </title>
+</head>
+<body>
+    <div class="content_main">
+        <div>
+            <button type="button" onclick="openModal('/pageAddFiliale')">Ajouter Filiale</button>
+        </div>
+              <!-- Popup -->
+  <div id="modal" class="modal">
+  <div class="modal-content">
+    <div class="nav-popup">  
+    <h4> Ajouter une filiale</h4>
+    <span class="close" onclick="closeModal()">&times;</span>
+    </div>
+    <div id="modal-body">
+     
+    </div>
+  </div>
+ </div>
+<div class="Table_container mt-4">
+<table id="TableFiliale" class="table table-bordered table-striped mt-3" style="width:100%">
+<thead class="table-dark">
+    <tr>
+      <th>Nom Fililale</th>
+      <th>Adresse Ip</th>
+      <th>Nom Bdd </th>
+      <th>User Bdd</th>
+      <th>password bdd</th>
+      <th>Date de creation</th>
+      <th>Action</th>
+    </tr>
+</thead>
+        <tbody>
+            <!-- Rempli via JavaScript -->
+        </tbody>
+</table>
+
+</div>       
+</div>
+    <script src="/js/pageFiliale.js"></script>
+</body>
+</html>

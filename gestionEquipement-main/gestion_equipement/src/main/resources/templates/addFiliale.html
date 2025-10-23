@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/css/login.css">
+    <title>add Service</title>
+</head>
+<body>
+    <div class="container-add">
+    <form  class="form-add" id="addFiliale" data-endpoint="/addFiliale"  autocomplete="off">
+    <label for="">Nom  de la filiale:</label>
+    <input type="text"name="nomFiliale" required>
+
+    <label for="">Adresse IP :</label>
+    <input type="text" name="adresseIp" required>
+
+    <label for="">Nom Base de Données :</label>
+    <input type="text" name="nomBdd" required>
+
+    <label for=""> User Base de Données :</label>
+    <input type="text" name="userBdd" required>
+     
+    <label for=""> Password Base de Données :</label>
+    <input type="text" name="passwordBdd" required>
+
+    <button type="submit">Ajouter</button>
+    </form>
+    </div>
+       <script src="/js/formSubmit.js"></script>
+</body>
+</html>

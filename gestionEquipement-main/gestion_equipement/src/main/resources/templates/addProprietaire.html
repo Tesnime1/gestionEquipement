@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/login.css">
+  <title>Ajouter un proprietaire</title>
+</head>
+<body>
+<div class="container-add">
+<form class="form-add" id="addProprietaire"  autocomplete="off">
+   <label for="">Equipment</label>
+    <!-- ⚡ Select qui sera rempli dynamiquement -->
+  <select name="equipement" id="equipement-select" required>
+  <option value="">⏳ Chargement des équipements...</option>
+  </select>
+<div id="fiche-valeurs-container">
+  <!-- Les fiches s'afficheront ici -->
+</div>
+
+   <label for="filiale-select">Filiale :</label>
+   <select name="filiale" id="filiale-select" required>
+      <option value="">⏳ Chargement des filiales...</option>
+   </select>
+
+
+<select name="nomProprietaire" id="nomProprietaire-select" required>
+  <option value="">⏳ Chargement des proprietaires..</option>
+</select>
+
+<input type="hidden" name="matricule" id="matricule-hidden">
+<input type="hidden" name="nom" id="nom-hidden">
+<input type="hidden" name="prenom"  id="prenom-hidden">
+
+<div class="proprietaireDetailInput"  id="proprietaire-details">
+<input type="text" id="direction" name="direction" readonly>
+<input type="text" id="departement" name="departement" readonly>
+<input type="text" id="fonction"name="fonction" readonly>
+<input type="text" id="unite"name="unite" readonly>
+</div>
+
+ <button type="submit" onclick="ajouterProprietaireEtGenererRapport()">Ajouter</button>
+</form>
+</div> 
+<script src="/js/formSubmitProprietaire.js"></script>
+
+</body>
+</html>

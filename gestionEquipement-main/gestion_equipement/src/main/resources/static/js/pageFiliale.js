@@ -1,0 +1,182 @@
+// Variables globales (déclarées une seule fois)
+let allEquipements = []; // Cache pour les équipements
+let isEquipementSelectListenerAdded = false; // Flag pour éviter les doublons
+let currentFicheEquipementId = null;
+let equipementTableInstance = null;
+function initFilialeTable() {
+ 
+  // Détruire l'instance existante s'il y en a déjà une
+  if ($.fn.DataTable.isDataTable('#TableFiliale')) {
+    console.log("🗑️ Destruction de l'ancienne instance DataTable");
+    $('#TableFiliale').DataTable().destroy();
+  }
+
+  try {
+    $('#TableFiliale').DataTable({
+      paging: false,
+      searching: true,
+      ordering: true,
+      info: false,
+      lengthChange: false,
+      language: {
+        url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+      },
+      ajax: {
+        url: "/Filiales",
+        dataSrc: "",
+        complete: function(xhr) {
+          console.log("✅ AJAX Historique - Réponse complète:", xhr.status);
+          console.log("📊 Données reçues filiales:", xhr.responseJSON);
+          console.log(JSON.stringify(xhr.responseJSON,null,2))
+        },
+        error: function(xhr, status, error) {
+          console.error("❌ Erreur AJAX Historique:", error);
+          console.error("❌ Status:", status);
+          console.error("❌ Response:", xhr.responseText);
+        }
+      },
+      columns: [
+        { data: "nomFiliale" },
+        { data: "adresseIp" },
+        { data: "nomBdd" },
+          { data: "userBdd" },
+            { data: "passwordBdd" },
+        {
+          data: "dateCreation",
+          render: function(data) {
+            return data ? new Date(data).toLocaleDateString("fr-FR") : "—";
+          }
+        },
+        
+        {
+          data: null,
+          render: function(data, type, row) {
+            return `<button class="btn btn-success btn-sm" 
+                      onclick='showDetailsFiliale(${JSON.stringify(row)})'>
+                     Modifier
+                    </button>`;
+          }
+        }
+      ],
+      initComplete: function() {
+        console.log("✅ DataTable Historique initialisée avec succès!");
+      }
+    });
+  } catch(error) {
+    console.error("❌ Erreur lors de la création de la DataTable:", error);
+  }
+
+}
+function showDetailsFiliale(row) {
+  console.log("📋 Détail Filiale :", row);
+
+  let html = ` <div class="p-3"  data-id-filiale="${row.idFiliale}">
+      <div class="mb-2">
+        <label class="form-label">Nom Fililale :</label>
+        <input class=" form-control nom-filiale" value="${row.nomFiliale}" >
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Adresse Ip :</label>
+        <input  class="form-control ip-filiale"  value="${row.adresseIp}" >
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Nom Bdd :</label>
+        <input class="form-control bdd-filiale" value="${row.nomBdd}" >
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">User Bdd:</label>
+        <input  class="form-control user-filiale" value="${row.userBdd}">
+      </div>
+<div class="mb-2">
+        <label class="form-label">password bdd:</label>
+        <input class="form-control psw-filiale" value="${row.passwordBdd}">
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Date de creation:</label>
+        <input class="form-control" value="${row.dateCreation ? new Date(row.dateCreation).toLocaleDateString('fr-FR') : ''}" readonly>
+      </div>
+      
+  `;
+
+  html += `
+      </ul>
+      <div class="mt-3 text-end">
+        <button class="btn btn-success btn-sm btn-updateFiliale">Modifier</button>
+      </div>
+    </div>
+  `;
+  $("#modal-body").html(html);
+  $("#modal .nav-popup h4").text("Détail filiale");
+  $("#modal").css("display", "flex");
+}
+function updateFiliale(idFiliale, updatedData) {
+  return fetch(`/${idFiliale}/updateFiliale`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedData)
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Erreur HTTP " + res.status);
+    return res.json();
+  });
+}
+$(document).on("click", ".btn-updateFiliale", function () {
+  const $container = $(this).closest(".p-3");
+  const filialeId = $container.data("id-filiale");
+
+  const updatedData = {
+    nomFiliale: $container.find(".nom-filiale").val(),
+    adresseIp: $container.find(".ip-filiale").val(),
+    nomBdd: $container.find(".bdd-filiale").val(),
+    userBdd: $container.find(".user-filiale").val(),
+    passwordBdd: $container.find(".psw-filiale").val()
+  };
+
+  console.log("📡 ID Filiale :", filialeId);
+  console.log("📝 Données à envoyer :", updatedData);
+
+  updateFiliale(filialeId, updatedData)
+    .then(data => {
+      customAlert("✅ Filiale mise à jour avec succès !");
+      console.log("📦 Réponse :", data);
+         $('#TableFiliale').DataTable().ajax.reload(null, false);
+      $("#modal").hide();
+    })
+    .catch(err => {
+      customAlert("❌ Erreur lors de la mise à jour");
+      console.error(err);
+    });
+});
+// --------Popup equipement et filiale ,user
+function openModal(url, defaultNom, title) {
+  console.log("📥 Ouverture modal :", url);
+  
+  $("#modal-body").load(url, function () {
+    $("#modal").css("display", "flex");
+    
+    // Définir le titre si fourni
+    if (title) {
+      $("#modal .nav-popup h4").text(title);
+    }
+    
+    // Pré-remplir le champ nom si fourni
+    const inputNom = $("#modal-body").find("input[type='text']").first();
+    if (inputNom.length && defaultNom) {
+      inputNom.val(defaultNom);
+    }
+    
+  
+ 
+  });
+}
+function closeModal() {
+  console.log("🔒 Fermeture modal");
+  $("#modal").css("display", "none");
+  $("#modal-body").empty();
+  
+  // Reset du flag listener
+  isEquipementSelectListenerAdded = false;
+}

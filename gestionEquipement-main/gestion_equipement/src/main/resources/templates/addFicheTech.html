@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/login.css">
+    <title>Fiche Technique</title>
+</head>
+<body>
+<div class="container-add">
+    <form class="form-add" id="addFichetech"  autocomplete="off">
+        
+        <label>Equipement:</label>
+        <select name="equipement" id="equipement-select" required>
+            <option value="">⏳ Chargement des équipements...</option>
+        </select>
+
+        <label>Libellé de la fiche:</label>
+        <input type="text" name="libelle" placeholder="Ex: Marque,Taille..." required>
+
+        <div id="fiche-container">
+        </div>
+
+        <button type="button" id="add-caracteristique-btn">+ Ajouter caractéristique</button>
+        <br><br>
+        <button type="submit">Ajouter Fiche Technique</button>
+    </form>
+</div>
+
+<!--  Assurez-vous que jQuery est chargé avant votre script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/formSubmitFicheTech.js"></script>
+</body>
+</html>

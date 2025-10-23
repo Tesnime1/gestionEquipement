@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <title>proprietaire</title>
+</head>
+<body>
+  <div class="content_main">
+  <div class="menu">
+    <button type="button" onclick="openModalProprietaire('/pageAddProprietaire' ,'','Ajouter un proprietaire ')">Ajouter un proprietaire</button> 
+  </div>
+      <!-- Popup -->
+  <div id="modal" class="modal">
+  <div class="modal-content">
+    <div class="nav-popup">  
+    <h4> Ajouter un equipement</h4>
+    <span class="close" onclick="closeModal()">&times;</span>
+    </div>
+    <div id="modal-body">
+      <!-- contenu du formulaire chargé ici -->
+    </div>
+  </div>
+ </div>
+ 
+  <div class="Table_container mt-4">
+    <table id="TableEquipementHistorique" class="table table-bordered table-striped mt-3" style="width:100%">
+     <thead class="table-dark">
+    <tr>
+      <th>Nom propriétaire(ancien)</th>
+      <th>Nom propriétaire(nouveau)</th>
+      <th>modifier par  </th>
+      <th>Date d’ajout (nouveau)</th>
+      <th>Date d'ajout (ancien)</th>
+      <th>Detail</th>
+    </tr>
+
+</thead>
+        <tbody>
+            <!-- Rempli via JavaScript -->
+        </tbody>
+    </table>
+</div> 
+
+</div>
+ 
+      <script src="/js/pageHistorique.js"></script>
+</body>
+</html>
