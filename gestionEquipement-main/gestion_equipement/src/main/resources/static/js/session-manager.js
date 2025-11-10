@@ -155,7 +155,7 @@ if (document.readyState === 'loading') {
 }
 
 // Vérification périodique (toutes les 3 minutes)
-setInterval(checkSession, 1 * 60 * 1000);
+setInterval(checkSession, 3 * 60 * 1000);
 
 // ========================================
 // 4️⃣ EXPOSER GLOBALEMENT
