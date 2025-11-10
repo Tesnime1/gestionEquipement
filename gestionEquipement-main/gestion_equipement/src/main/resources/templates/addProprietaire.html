@@ -22,7 +22,10 @@
    <select name="filiale" id="filiale-select" required>
       <option value="">⏳ Chargement des filiales...</option>
    </select>
+<input type="hidden" name="scanner" id="scanner-hidden" value="false">
 
+   <label for="nomProprietaire-select">Propriétaire :</label>
+    <!-- ⚡ Select qui sera rempli dynamiquement -->
 
 <select name="nomProprietaire" id="nomProprietaire-select" required>
   <option value="">⏳ Chargement des proprietaires..</option>
@@ -39,10 +42,9 @@
 <input type="text" id="unite"name="unite" readonly>
 </div>
 
- <button type="submit" onclick="ajouterProprietaireEtGenererRapport()">Ajouter</button>
+ <button type="submit" >Ajouter</button>
 </form>
-</div> 
-<script src="/js/formSubmitProprietaire.js"></script>
-
+</div>
+<script src="/js/formAdd.js"></script>
 </body>
 </html>

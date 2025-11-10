@@ -1,4 +1,3 @@
-
 package com.gestion_equipment.gestion_equipement.model;
 
 import jakarta.persistence.*;
@@ -7,13 +6,17 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "fiches_techniques")
+
+@Table(
+    name = "fiches_techniques",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"equipement_id", "libelle"})
+)
 public class FicheTechnique {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idFicheTechnique;
     
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String libelle;
     private LocalDateTime dateCreation;
     

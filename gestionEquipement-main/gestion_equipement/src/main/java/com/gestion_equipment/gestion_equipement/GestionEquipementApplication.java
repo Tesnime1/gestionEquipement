@@ -21,6 +21,7 @@ private final PasswordEncoder passwordEncoder;
 		SpringApplication.run(GestionEquipementApplication.class, args);
 	}
  @Override
+ 
     public void run(String... args) {
     if (!utilisateur_Repo.existsByNom("Admin")) {
            Utilisateur utilisateur = new Utilisateur();

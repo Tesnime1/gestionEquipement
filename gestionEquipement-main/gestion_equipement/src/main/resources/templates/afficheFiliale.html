@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{sideBarMenu}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +9,11 @@
     <title>service </title>
 </head>
 <body>
+    
+
+<section layout:fragment="content">
     <div class="content_main">
-        <div>
+        <div class="menu">
             <button type="button" onclick="openModal('/pageAddFiliale')">Ajouter Filiale</button>
         </div>
               <!-- Popup -->
@@ -24,7 +29,7 @@
   </div>
  </div>
 <div class="Table_container mt-4">
-<table id="TableFiliale" class="table table-bordered table-striped mt-3" style="width:100%">
+<table id="TableFiliale" class="table table-bordered table-striped mt-3" >
 <thead class="table-dark">
     <tr>
       <th>Nom Fililale</th>
@@ -43,6 +48,9 @@
 
 </div>       
 </div>
-    <script src="/js/pageFiliale.js"></script>
+
+<script src="/js/toggleMenu.js"></script>
+<script src="/js/afficheFiliale.js"></script>
+</section>
 </body>
 </html>

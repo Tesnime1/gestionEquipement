@@ -1,4 +1,3 @@
-//  EQUIPEMENT INSTANCE - Instance physique d'un équipement
 package com.gestion_equipment.gestion_equipement.model;
 
 import java.time.LocalDateTime;
@@ -6,7 +5,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 @Entity
 @Table(name = "equipement_instances")
 public class EquipementInstance {
@@ -24,6 +22,8 @@ public class EquipementInstance {
     private String departement;
     private String fonction;
     private String unite;
+    private boolean scanner=false;
+   
 
     // ⚡ Relations
     @ManyToOne(fetch = FetchType.LAZY)
@@ -85,4 +85,8 @@ public class EquipementInstance {
 
     public Filiale getFiliale() { return filiale; }
     public void setFiliale(Filiale filiale) { this.filiale = filiale; }
+    
+    public boolean isScanner() { return scanner;}
+    public void setScanner(boolean scanner) {this.scanner = scanner;}
+
 }

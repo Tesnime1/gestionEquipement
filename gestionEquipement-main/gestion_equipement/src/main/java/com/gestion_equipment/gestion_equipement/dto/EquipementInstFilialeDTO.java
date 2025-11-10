@@ -11,7 +11,7 @@ public class EquipementInstFilialeDTO {
     private Long idFiliale;
     private String direction;
     private String departement;
-    private String unite;
+   
     private String fonction;
     
 }

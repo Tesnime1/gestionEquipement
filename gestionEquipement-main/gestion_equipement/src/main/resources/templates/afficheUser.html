@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{sideBarMenu}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +9,11 @@
     <title>utilisateur</title>
 </head>
 <body>
+    
+
+<section layout:fragment="content">
     <div class="content_main">
-        <div><button type="button" onclick="openModal('/AfficheAddUser')">Ajouter Utilisateur</button></div>
+        <div class="menu"><button type="button" onclick="openModal('/AfficheAddUser')">Ajouter Utilisateur</button></div>
         <!-- Popup -->
 <div id="modal" class="modal">
   <div class="modal-content">
@@ -22,7 +27,7 @@
   </div>
 </div>
     <div class="Table_container mt-4">
-    <table id="Table" class="table table-bordered table-striped mt-3" style="width:100%">
+    <table id="Table" class="table table-bordered table-striped mt-3" >
         <thead class="table-dark">
             <tr>
                 <th>Nom </th>
@@ -42,15 +47,22 @@
                 <span class="close" onclick="closePopupModifierUser('modalEdit')">&times;</span>
             </div>
             <div id="modalEdit-body">
+                <form action="">
                 <label for="">Nouveau mot de passe</label>
-                <input type="password" id="newPassword">
-      <button type="button" class="updateMotdePass">Modifier</button>
+                <input type="password" id="newPassword" required>
+              <button type="submit" class="updateMotdePass">Modifier</button>
+              </form>
             </div>
         </div>
     </div>  
 </div>
+  <script src="/js/toggleMenu.js"></script>
+<script src="/js/afficheUser.js"> </script>   
 
- 
 
+
+
+
+</section>
 </body>
 </html>

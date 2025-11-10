@@ -10,24 +10,31 @@
 <body>
     <div class="container-add">
     <form  class="form-add" id="addFiliale" data-endpoint="/addFiliale"  autocomplete="off">
+        <div class="form-div">
     <label for="">Nom  de la filiale:</label>
     <input type="text"name="nomFiliale" required>
-
+</div>
+<div class="form-div">
     <label for="">Adresse IP :</label>
     <input type="text" name="adresseIp" required>
-
+</div>
+<div class="form-div">
     <label for="">Nom Base de Données :</label>
     <input type="text" name="nomBdd" required>
-
+</div>
+<div class="form-div">
     <label for=""> User Base de Données :</label>
     <input type="text" name="userBdd" required>
-     
+     </div>
+     <div class="form-div">
     <label for=""> Password Base de Données :</label>
     <input type="text" name="passwordBdd" required>
+</div>
 
     <button type="submit">Ajouter</button>
     </form>
     </div>
-       <script src="/js/formSubmit.js"></script>
+    <script src="/js/formAdd.js">// Fonction Ajax avec jQuery
+</script>
 </body>
 </html>

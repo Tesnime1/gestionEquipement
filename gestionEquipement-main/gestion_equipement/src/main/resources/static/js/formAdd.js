@@ -1,50 +1,4 @@
-// Variables globales (déclarées une seule fois)
-let allEquipements = []; // Cache pour les équipements
-let isEquipementSelectListenerAdded = false; // Flag pour éviter les doublons
-let currentFicheEquipementId = null;
-let equipementTableInstance = null;
-const initMap = {
-  "/showUsers": () => initUserTable(),
-  "/showEquipements": () => initEquipementTable(),
-  "/showProprietaires": () => {
-    initEquipementProprietaireTable();
-    
-  },
-  "/showHistory": () => initEquipementHistoriqueTable(),
-  "/showResearchEquipement": () => {
-  loadFilialesInSelect();
-  
-  if (allEquipements.length === 0) {
-    loadEquipementsInSelect();
-  } else {
-    populateEquipementSelectFromCache();
-  }
-  
-  //  CORRECTION : Attacher les listeners après un délai
-  setTimeout(() => {
-    const searchSelect = document.querySelector('.rechercheContainer #equipement-select');
-    const searchSelectFiliale = document.querySelector(' #filiale-select');
 
-    if (searchSelect) {
-      searchSelect.removeEventListener("change", handleSearchEquipementChange);
-      searchSelect.addEventListener("change", handleSearchEquipementChange);
-      console.log("✅ Listener équipement attaché");
-    }
-    
-    if (searchSelectFiliale) {
-      searchSelectFiliale.removeEventListener("change", handleFilialeChange);
-      searchSelectFiliale.addEventListener("change", handleFilialeChange);
-      console.log("✅ Listener filiale attaché");
-    }
-  }, 150); // Délai pour s'assurer que le DOM est prêt
-},
-    "/pageAddFicheTech": () => {
-    populateEquipementSelectFromCache();
-    setupEquipementChangeListener();
-  },
-  "/showFiliales":()=>initFilialeTable(),
-
-};
 function setupFormHandling() {
   console.log("🎯 Configuration gestion des formulaires");
 
@@ -55,8 +9,9 @@ function setupFormHandling() {
       tableToReload: '#Table'
     },
     'addEquipementform': {
-      endpoint: '/addEquipement',
+      endpoint: '/addEquipementAndFicheTech',
       successMessage: (result) => `✅ Équipement ajouté : ${result.libelle}`,
+       customDataProcessor: processEquipementWithFichesData, 
       tableToReload: '#TableEquipement',
     },
     'addFichetech': {
@@ -71,8 +26,8 @@ function setupFormHandling() {
       tableToReload: '#TableEquipementProprietaire',
       customDataProcessor: processProprietaireData,  setupFilialeChangePourListeEmployes 
       // Appelle cette fonction au chargement de la page ou lors de l’ouverture du formulaire
-       
-    },
+  },
+  
        'addFiliale': {
       endpoint: '/addFiliale',
       successMessage: (result) => `✅ filiale ajouté : ${result.nomFiliale}`,
@@ -80,7 +35,7 @@ function setupFormHandling() {
        
     }
   };
-
+  console.log("📋 Formulaires configurés :", Object.keys(formConfigs));
   // Supprimer les anciens écouteurs pour éviter les doublons
   $(document).off('submit', Object.keys(formConfigs).map(id => `#${id}`).join(','));
 
@@ -121,6 +76,7 @@ function reloadEquipementTable() {
     }
   }
 }
+
 function handleFormSubmission(form, config) {
   console.log(`🚀 Soumission formulaire : ${form.id}`);
 
@@ -140,6 +96,9 @@ function handleFormSubmission(form, config) {
   if (config.customDataProcessor) {
     data = config.customDataProcessor(form, data);
   }
+
+  console.log(`📤 Envoi données :`, data);
+
   fetch(config.endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -150,10 +109,9 @@ function handleFormSubmission(form, config) {
       return res.json();
     })
     .then(result => {
-   
-      customAlert("✅ Mise à jour faite avec succès !", "success", true);
+    customAlert("✅ Mise à jour faite avec succès !", "success", true);
       
-      // ✅ UTILISER LA FONCTION DÉDIÉE pour recharger
+      //  UTILISER LA FONCTION DÉDIÉE pour recharger
       if (config.tableToReload === '#TableEquipement') {
         console.log("🎯 Rechargement via fonction dédiée");
         reloadEquipementTable();
@@ -173,13 +131,14 @@ function handleFormSubmission(form, config) {
     })
     .catch(err => {
       console.error(`❌ Erreur :`, err);
-      customAlert("❌ Données non envoyées !", "error");
+      customAlert("❌ Données existe Déja, Données non envoyées !", "error");
     })
     .finally(() => {
       $(form).data('submitting', false);
       $button.prop('disabled', false).text(originalText);
     });
 }
+// --------- CHARGEMENT ÉQUIPEMENTS DANS SELECTS -------  
 function loadEquipementsInSelect() {
   console.log("📥 Chargement des équipements pour tous les selects");
 
@@ -400,12 +359,11 @@ function addFiche() {
     console.error("❌ Container fiche-container introuvable");
     return;
   }
-
+    
+  const index = container.children.length + 1;
   const div = document.createElement("div");
   div.className = 'fiche-item';
   div.style.cssText = 'margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;';
-  
-  const index = container.children.length + 1;
   
   div.innerHTML = `
     <label>Caractéristique ${index} :</label>
@@ -414,8 +372,206 @@ function addFiche() {
   `;
   
   container.appendChild(div);
+    // Attacher l'événement au bouton qui vient d'être créé
+  div.querySelector('.btn-remove-fiche').addEventListener('click', function() {
+    removeFiche(this);
+  });
 }
 function removeFiche(button) {
   console.log("🗑️ Suppression caractéristique");
   button.closest('.fiche-item').remove();
 }
+$(document).ready(function() {
+  setupFormHandling();
+  console.log("✅ Gestion des formulaires initialisée");
+});
+$(document).on('keydown', 'form', function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault(); // Empêche la soumission
+    return false;
+  }});
+function setupEquipementChangeListener() {
+  if (isEquipementSelectListenerAdded) {
+    console.log("⚠️ Listener déjà attaché");
+    return;
+  }
+
+  const equipementSelect = document.getElementById("equipement-select");
+  
+  if (!equipementSelect) {
+    console.warn("⚠️ Select equipement-select introuvable");
+    return;
+  }
+  
+  // ✅ Utiliser jQuery avec namespace
+  $(equipementSelect).off('change.fichetech').on('change.fichetech', handleEquipementChange);
+  isEquipementSelectListenerAdded = true;
+  console.log("✅ Listener équipement attaché");
+} 
+function customAlert(message, type = "success", closeModal = false) {
+  const overlay = document.createElement("div");
+  overlay.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;justify-content:center;align-items:center;z-index:9999;";
+  
+  const buttonColor = type === "success" ? "#198754" : "#dc3545";
+  
+  const box = document.createElement("div");
+  box.style.cssText = "background:#fff;padding:2vw;border-radius:5px;text-align:center;min-width:40vw;box-shadow:0 5px 15px rgba(0,0,0,0.3);";
+  box.innerHTML = `
+    <p style="font-family:sans-serif;font-size:16px;font-weight:600;">${message}</p>
+    <button id="ok-btn" style="background:${buttonColor};border:none;padding:8px 16px;border-radius:6px;color:white;font-weight:bold;cursor:pointer;">OK</button>
+  `;
+  
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  
+  document.getElementById("ok-btn").addEventListener("click", () => {
+    overlay.remove();
+    if (closeModal) $("#modal").hide();
+  });
+}
+function processProprietaireData(form, data) {
+  console.log("🔧 Traitement données Proprietaire");
+  console.log("📋 Data brute reçue:", data);
+  
+  // Récupération optimisée des champs via destructuring-like pattern
+  const getFieldValue = (selector) => {
+    const element = form.querySelector(selector);
+    return element?.value?.trim() || null;
+  };
+  
+  // Récupérer toutes les valeurs en une seule passe
+  const [equipementId, filialeId] = [
+    getFieldValue('select[name="equipement"]'),
+    getFieldValue('select[name="filiale"]')
+  ].map(v => v ? Number(v) : null);
+  
+  const [nom, prenom, fonction, departement, direction, matricule, unite] = [
+    'nom', 'prenom', 'fonction', 'departement', 'direction', 'matricule', 'unite','scanner'
+  ].map(name => getFieldValue(`input[name="${name}"]`));
+  
+  // Récupérer et transformer les valeurs des fiches techniques
+  const valeurs = Array.from(document.querySelectorAll(".fiche-valeur-item"))
+    .map(item => {
+      const ficheId = item.getAttribute('data-fiche-id');
+      const valeur = item.querySelector("input[name^='valeur']")?.value?.trim();
+      
+      if (!ficheId || !valeur) return null;
+      
+      console.log(`📊 Fiche ID: ${ficheId}, Valeur: ${valeur}`);
+      return {
+        ficheTechId: Number(ficheId), 
+        valeur
+      };
+    })
+    .filter(Boolean); // Supprime les entrées null
+  
+  // Construire le DTO
+  const processedData = {
+    nom,
+    prenom,
+    fonction,
+    departement,
+    direction,
+    matricule,
+    unite,
+    equipementId,
+    filialeId,
+    valeurs
+  };
+  
+  console.log("✅ Données traitées Proprietaire:", processedData);
+  console.log("📊 Nombre de valeurs:", valeurs.length);
+  
+  return processedData;
+}
+
+function processEquipementWithFichesData(form, data) {
+  console.log("🔧 Traitement données équipement + fiches");
+  
+  // Récupérer le libellé de l'équipement
+  const libelleEquipement = data.libelle;
+  
+  // Récupérer toutes les fiches techniques du conteneur
+  const ficheInputs = document.querySelectorAll('#fiche-content input[type="text"]');
+  const fiches = Array.from(ficheInputs)
+    .map(input => {
+      const libelle = input.value.trim();
+      return libelle ? { libelle: libelle } : null;
+    })
+    .filter(fiche => fiche !== null); // Supprimer les valeurs nulles
+  
+  // Construire l'objet DTO
+  const dto = {
+    libelleEquipement: libelleEquipement,
+    fiches: fiches.length > 0 ? fiches : null
+  };
+  
+  console.log("📦 DTO construit :", dto);
+  return dto;
+
+}
+// Fonction pour charger les employés quand la filiale change
+function setupFilialeChangePourListeEmployes() {
+  const filialeSelect = document.getElementById('filiale-select');
+  const proprietaireSelect = $('#nomProprietaire-select');
+
+  if (!filialeSelect || !proprietaireSelect.length) {
+    console.warn('⚠️ Éléments non trouvés');
+    return;
+  }
+
+  $(filialeSelect).off('change.filiale').on('change.filiale', async function (e) {
+    const filialeId = e.target.value;
+    console.log('🏢 Filiale sélectionnée:', filialeId);
+
+    // Si aucune filiale → réinitialiser proprement
+    if (!filialeId) {
+      proprietaireSelect.html('<option value="">-- Sélectionner une filiale d\'abord --</option>');
+      proprietaireSelect.prop('disabled', true);
+      proprietaireSelect.trigger('change.select2');
+      return;
+    }
+
+    // 💡 Ajouter un indicateur visuel de chargement sans bloquer le select
+    proprietaireSelect.html('<option value="">⏳ Chargement...</option>');
+    proprietaireSelect.prop('disabled', false);
+    proprietaireSelect.trigger('change.select2');
+
+    try {
+      const response = await fetch(`/${filialeId}/proprietaires`);
+      if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+      const employes = await response.json();
+      proprietaireSelect.empty();
+
+      if (!employes || employes.length === 0) {
+        proprietaireSelect.append('<option value="">Aucun employé trouvé</option>');
+      } else {
+        proprietaireSelect.append('<option value="">-- Sélectionner un employé --</option>');
+        employes.forEach(emp => {
+          proprietaireSelect.append(
+            `<option value="${emp.matricule}"
+              data-matricule="${emp.matricule || ''}"
+                data-nom="${emp.nom || ''}"
+                data-prenom="${emp.prenom || ''}"
+                data-direction="${emp.direction || ''}"
+                data-departement="${emp.departement || ''}"
+                data-fonction="${emp.fonction || ''}"
+                data-unite="${emp.unite || ''}">
+              ${emp.matricule} - ${emp.nom} ${emp.prenom}
+            </option>`
+          );
+        });
+      }
+
+      // 🔄 Rafraîchir Select2 sans le recréer complètement
+      proprietaireSelect.trigger('change.select2');
+
+      console.log('✅ Employés chargés :', employes.length);
+    } catch (error) {
+      console.error('❌ Erreur chargement employés:', error);
+      proprietaireSelect.html('<option value="">Erreur de chargement</option>');
+    }
+  });
+}
+

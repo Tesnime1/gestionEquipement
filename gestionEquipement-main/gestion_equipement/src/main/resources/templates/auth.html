@@ -1,22 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-     <link rel="stylesheet" href="/css/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login.css">
     <title>Login</title>
 </head>
 <body>
     <div class="container">
- <form class="form-login" action="/login" method="post"  autocomplete="off">
-    <label for="username">Nom d'utilisateur :</label>
-    <input type="text" id="username" name="username" required><br><br>
+        <h3> Equipement Management System</h3>
+        <!-- Message d'erreur -->
+        <p th:if="${error}" style="color:red; font-weight:bold; text-align:center; margin-bottom:15px;">
+            ⚠️ Nom d'utilisateur ou mot de passe incorrect.
+        </p>
 
-    <label for="password">Mot de passe :</label>
-    <input type="password" id="password" name="password" required><br><br>
+        <!-- Message de déconnexion -->
+        <p th:if="${logout}" style="color:green; font-weight:bold; text-align:center; margin-bottom:15px;">
+            ✅ Vous avez été déconnecté avec succès.
+        </p>
+      
+  <div id="expired-message" style="display:none; color:red; margin-bottom:10px;">
+    ⚠️ Votre session a expiré.  
+    <button onclick="window.location.reload()">🔄 Reconnecter</button>
+  </div>
 
-    <button class="btnlogin" type="submit">Se connecter</button>
+        <!-- ✅ Changement ici : action="/auth" au lieu de "/login" -->
+        <form class="form-login" action="/auth" method="post" autocomplete="off">
+            <label for="username">Nom d'utilisateur :</label>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="password">Mot de passe :</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <button class="btnlogin" type="submit">Se connecter</button>
+        </form>
     </div>
+    <script>
+  if (window.location.search.includes("expired=true")) {
+    document.getElementById("expired-message").style.display = "block";
+  }
+</script>
 </body>
 </html>

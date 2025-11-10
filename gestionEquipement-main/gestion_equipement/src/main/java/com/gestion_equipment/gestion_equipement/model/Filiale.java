@@ -14,13 +14,13 @@ public class Filiale {
 
     @Column(nullable = false, unique = true)
     private String nomFiliale;
-     @Column(nullable = false, unique = true)
+     @Column(nullable = false)
     private String adresseIp;
      @Column(nullable = false, unique = true)
     private String nomBdd;  
-     @Column(nullable = false, unique = true)
+     @Column(nullable = false)
     private String userBdd;
-     @Column(nullable = false, unique = true)
+    
     private String passwordBdd;
     private LocalDateTime dateCreation;
     

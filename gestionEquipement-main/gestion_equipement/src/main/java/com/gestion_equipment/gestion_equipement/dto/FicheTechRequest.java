@@ -7,6 +7,7 @@ public class FicheTechRequest {
     private Long equipementId;
     private List<String> libelles;
     private LocalDateTime dateCreation ;
+    
     public LocalDateTime getDateCreation() {return dateCreation;}
     public void setDateCreation(LocalDateTime dateCreation) {this.dateCreation = dateCreation;}
     public Long getEquipementId() {return equipementId;}

@@ -16,7 +16,7 @@ public interface EquipementInstance_Repo extends JpaRepository<EquipementInstanc
         List<EquipementInstance> findByEquipement_IdEquipement(Long equipementId);
 
 @Query("SELECT new com.gestion_equipment.gestion_equipement.dto.EquipementInstFilialeDTO(" +
-       "i.filiale.idFiliale, i.direction, i.departement, i.unite, i.fonction) " +
+       "i.filiale.idFiliale, i.direction, i.departement, i.fonction) " +
        "FROM EquipementInstance i " +
        "WHERE i.filiale.idFiliale = :filialeId")
 List<EquipementInstFilialeDTO> findDetailsInstByFilialeId(@Param("filialeId") Long filialeId);
@@ -33,7 +33,8 @@ List<EquipementInstFilialeDTO> findDetailsInstByFilialeId(@Param("filialeId") Lo
         ei.unite,
         e.libelle,
         u.nom,
-        ei.dateCreation
+        ei.dateCreation,
+        ei.scanner
       
     )
     FROM EquipementInstance ei
@@ -63,7 +64,7 @@ List<ProprietaireEquipementDTO> findProprietairesAvecFiltrageValeurs(
         @Param("nbValeurs") long nbValeurs
 );
   @Query("SELECT new com.gestion_equipment.gestion_equipement.dto.EquipementInstProprietaireDTO(" +
-           "i.nom, i.prenom, i.utilisateur.nom, i.dateCreation, i.equipement.libelle, i.idEquipementInstance,i.matricule,i.filiale.nomFiliale) " +
+           "i.nom, i.prenom, i.utilisateur.nom, i.dateCreation, i.equipement.libelle, i.idEquipementInstance,i.matricule,i.filiale.nomFiliale, i.scanner ,i.direction,i.departement,i.fonction) " +
            "FROM EquipementInstance i")
     List<EquipementInstProprietaireDTO> findDetailsInst();
 

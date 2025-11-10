@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import com.gestion_equipment.gestion_equipement.model.Utilisateur;
 import com.gestion_equipment.gestion_equipement.repository.Utilisateur_Repo;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 public class SecurityConfig {
@@ -43,15 +46,18 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/css/**", "/js/**","/images/**").permitAll()
-                .requestMatchers("/home","/AfficheAddUser","/pageAddEquipement","/addEquipement","/Equipements","/FicheTechs","/addFichTech","/addProprietaire","/details","/pageAddFicheTech","/pageAddProprietaire","/equipement/**","/equipementFiches","/Proprietaires","/showProprietaires","/*/proprietaire","/*/ficheTechvalue","/showHistory","/historique","/*/updateFiliale","/*/updateFiche" ,"/pageAddFiliale","/NomIdFiliales","/Filiales","/equipement-instance/*","/test-connexion","/showResearchEquipementFiliale","/showFiliales","/showEquipements","/addFiliale","/addEquipement").hasAnyRole("ADMIN", "UTILISATEUR")
+                .requestMatchers("/", "/css/**", "/js/**","/images/**","/error","/session/check").permitAll()
+                .requestMatchers("/home","/AfficheAddUser","/scannerr/**","/detailsRapport/**","/scanner/**","/pageAddEquipement","/addEquipement","/detailsReport/**","/Equipements","/FicheTechs","/addFichTech","/addProprietaire","/details","/pageAddFicheTech","/pageAddProprietaire","/equipement/**","/equipementFiches","/Proprietaires","/showProprietaires","/*/proprietaire","/*/ficheTechvalue","/showHistory","/historique","/*/updateFiliale","/*/updateFiche" ,"/pageAddFiliale","/NomIdFiliales","/Filiales","/equipement-instance/*","/test-connexion","/showResearchEquipementFiliale","/showFiliales","/showEquipements","/addFiliale","/addEquipement").hasAnyRole("ADMIN", "UTILISATEUR")
                 .requestMatchers("/addUser","/Users","/showUsers").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
+             .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin()) // ✅ autorise les iframes du même domaine
+            )
             .formLogin(form -> form
                 .loginPage("/auth") // GET /login pour la vue
-                .loginProcessingUrl("/login") // POST /login pour traitement
-                .failureUrl("/login?error=true") 
+                .loginProcessingUrl("/auth") // POST /login pour traitement
+                .failureUrl("/auth?error=true") 
                 .successHandler((request, response, authentication) -> {
                 String username = authentication.getName();
                 String role = authentication.getAuthorities().iterator().next().getAuthority();
@@ -62,7 +68,29 @@ public class SecurityConfig {
             })
         .permitAll()
             )
-            .logout(logout -> logout.permitAll());
+               .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
+                // ⚠️ NE PAS mettre invalidSessionUrl ni expiredUrl
+                // On va gérer ça avec un handler personnalisé
+            )
+            // ⚠️ Toujours retourner 401 pour session expirée
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"error\":\"Session expired\"}");
+                })
+            )
+            .logout(logout -> logout
+        .logoutUrl("/logout")
+        .logoutSuccessUrl("/auth")   // page de redirection après logout
+        .invalidateHttpSession(true)
+        .clearAuthentication(true)
+        .deleteCookies("JSESSIONID")
+        .permitAll()
+    );
            // Ça veut dire que tout le monde (même sans être connecté) a le droit d’appeler /logout.Sinon, Spring aurait exigé d’être authentifié avant de pouvoir se déconnecter (ce qui serait un peu contradictoire
            //"Voici la configuration de sécurité que j’ai définie, applique-la sur toutes mes requêtes HTTP."
          return http.build(); 

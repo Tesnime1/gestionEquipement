@@ -11,6 +11,7 @@ public class FicheTech_valeur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long idFtvaleur;
+     @Column(nullable = false)
     private String valeur;
     
     // ⚡ Relation Many-to-One avec FicheTechnique
@@ -19,7 +20,7 @@ public class FicheTech_valeur {
     @JsonIgnore  // ✅ Évite les boucles
     private FicheTechnique ficheTechnique;
 
-    // ⚡ Relation Many-to-One avec EquipementInstance
+    //  Relation Many-to-One avec EquipementInstance
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipement_instance_id", nullable = false)
     @JsonBackReference  // ✅ Utilisé avec @JsonManagedReference

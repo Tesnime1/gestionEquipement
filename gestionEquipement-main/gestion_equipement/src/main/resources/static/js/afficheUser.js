@@ -1,12 +1,4 @@
-// Variables globales (déclarées une seule fois)
-let allEquipements = []; // Cache pour les équipements
-let isEquipementSelectListenerAdded = false; // Flag pour éviter les doublons
-let currentFicheEquipementId = null;
-let equipementTableInstance = null;
-// --------Popup equipement et filiale ,user
 function openModal(url, defaultNom, title) {
-  console.log("📥 Ouverture modal :", url);
-  
   $("#modal-body").load(url, function () {
     $("#modal").css("display", "flex");
     
@@ -22,17 +14,21 @@ function openModal(url, defaultNom, title) {
     }
   });
 }
+function closeModal() { 
+  $("#modal").css("display", "none");
+  $("#modal-body").empty();
+  
+  // Reset du flag listener
+  isEquipementSelectListenerAdded = false;
+}
+function initUserTable() {  
 
-function initUserTable() {
-  console.log("📊 Initialisation DataTable Utilisateurs");
-  
-  // Détruire l'instance existante si elle existe
-  if ($.fn.DataTable.isDataTable('#Table')) {
-    $('#Table').DataTable().destroy();
-  }
-  
   $('#Table').DataTable({
-    paging: false,
+     paging: false,
+    responsive: true,   // ✅ tableau adaptable
+    scrollCollapse: true, 
+    scrollY: getScrollHeight(),
+    autoWidth: false,   // ✅ empêche DataTables de fixer des largeurs figées
     searching: true,
     ordering: true,
     info: false,
@@ -44,7 +40,7 @@ function initUserTable() {
       { orderable: false, targets: [1, 2] }
     ],
     ajax: {
-      url: "/Users", // ⚡ CORRECTION: Enlever localhost
+      url: "/Users", //  CORRECTION: Enlever localhost
       dataSrc: "",
       error: function (xhr) {
         console.error("❌ Erreur DataTable Users :", xhr.responseText);
@@ -61,14 +57,7 @@ function initUserTable() {
   }    ]
   });
 }
-function closeModal() {
-  console.log("🔒 Fermeture modal");
-  $("#modal").css("display", "none");
-  $("#modal-body").empty();
-  
-  // Reset du flag listener
-  isEquipementSelectListenerAdded = false;
-}
+// -------Fonction pour appeler l'API de mise à jour du mot de passe
 function updateMotdePass(userId, newPassword) {
   return fetch(`/${userId}/password`, {
     method: "PUT",
@@ -90,12 +79,9 @@ $(document).on("click", ".updateMotdePass", function () {
     customAlert("Veuillez saisir un mot de passe.");
     return;
   }
-
-  console.log("🔐 Mise à jour du mot de passe pour ID :", userId);
-
   updateMotdePass(userId, newPassword)
     .then(msg => {
-      customAlert("mise a jour faite avec success " + msg);
+      customAlert("mise a jour faite avec success " + msg,"success", true);
       modal.hide();
     })
     .catch(err => {
@@ -103,6 +89,7 @@ $(document).on("click", ".updateMotdePass", function () {
       console.error(err);
     });
 });
+// ------------GESTION MODALES--------
 function openPopupModifierUser( Id,userId) {
     const modal = document.getElementById( Id);
     if (modal) {
@@ -123,3 +110,4 @@ function closePopupModifierUser(Id) {
         modal.style.display = "none";
     }
 }
+document.addEventListener("DOMContentLoaded", initUserTable);

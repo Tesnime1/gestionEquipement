@@ -23,6 +23,7 @@ public class ProprietaireEquipementDTO {
     private String ajouterPar;
     private LocalDateTime dateDajout;
     private List<FicheTechValeurDTO> valeurs;
+    private boolean scanner;
 public ProprietaireEquipementDTO(
     Long idEquipementInst,
     String nomProprietaire,
@@ -34,7 +35,8 @@ public ProprietaireEquipementDTO(
     String unite,
     String equipement,
     String ajouterPar,
-    LocalDateTime dateDajout
+    LocalDateTime dateDajout,
+    boolean scanner
 ) {
     this.idEquipementInst = idEquipementInst;
     this.nomProprietaire = nomProprietaire;
@@ -47,6 +49,7 @@ public ProprietaireEquipementDTO(
     this.equipement = equipement;
     this.ajouterPar = ajouterPar;  // correspond à u.nom
     this.dateDajout = dateDajout;
+    this.scanner = scanner;
 }
 
  

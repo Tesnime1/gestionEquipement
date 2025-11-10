@@ -7,12 +7,15 @@ import java.util.List;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.gestion_equipment.gestion_equipement.dto.EquipementFichesDTO;
 import com.gestion_equipment.gestion_equipement.model.Equipement;
 import com.gestion_equipment.gestion_equipement.model.FicheTechnique;
 import com.gestion_equipment.gestion_equipement.model.Utilisateur;
 import com.gestion_equipment.gestion_equipement.repository.EquipementRepo;
 import com.gestion_equipment.gestion_equipement.repository.FicheTech_Repo;
 import com.gestion_equipment.gestion_equipement.repository.Utilisateur_Repo;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class FicheTechService {
@@ -54,8 +57,7 @@ public class FicheTechService {
         fiche.setDateCreation(LocalDateTime.now());
         fiches.add(fiche);
         fiche.setUtilisateur(user);
-    }
-   
+    }  
     return ficheTechRepo.saveAll(fiches);
 }
    
@@ -71,5 +73,51 @@ public class FicheTechService {
         fiche.setLibelle(newLibelle);
         return ficheTechRepo.save(fiche);
     }
+   
+@Transactional
+public Equipement createEquipementWithFiches(EquipementFichesDTO dto) {
+    // Récupérer l'utilisateur connecté
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Utilisateur user = utilisateurRepo.findByNom(username)
+            .orElseThrow(() -> new RuntimeException("Utilisateur introuvable : " + username));
+
+    // Créer l'équipement
+    Equipement equipement = new Equipement();
+    equipement.setLibelle(dto.getLibelleEquipement());
+    equipement.setDateCreation(LocalDateTime.now());
+    equipement.setUtilisateur(user);
     
+    // Sauvegarder l'équipement d'abord
+    equipement = equipementRepo.save(equipement);
+
+    // Si des fiches techniques sont fournies, les créer
+    if (dto.getFiches() != null && !dto.getFiches().isEmpty()) {
+        List<FicheTechnique> fichesToSave = new ArrayList<>();
+        
+        for (FicheTechnique fiche : dto.getFiches()) {
+            // Ignorer les fiches nulles ou avec libellé vide
+            if (fiche != null && fiche.getLibelle() != null && !fiche.getLibelle().trim().isEmpty()) {
+                // Créer une nouvelle instance pour éviter les problèmes de détachement
+                FicheTechnique nouvelleFiche = new FicheTechnique();
+                nouvelleFiche.setLibelle(fiche.getLibelle().trim());
+                nouvelleFiche.setDateCreation(LocalDateTime.now());
+                nouvelleFiche.setEquipement(equipement);
+                nouvelleFiche.setUtilisateur(user);
+                
+                // Si votre FicheTechnique a d'autres propriétés à copier
+                // Ajoutez-les ici, par exemple :
+                // nouvelleFiche.setDescription(fiche.getDescription());
+                // nouvelleFiche.setValeur(fiche.getValeur());
+                
+                fichesToSave.add(nouvelleFiche);
+            }
+        }
+        
+        if (!fichesToSave.isEmpty()) {
+            ficheTechRepo.saveAll(fichesToSave);
+        }
+    }
+
+    return equipement;
+}
 }

@@ -1,0 +1,18 @@
+<!-- templates/fragments/role-script.html -->
+<th:block th:fragment="script">
+  <script th:inline="javascript">
+      // Variable globale disponible partout
+      window.userRole = /*[[${role}]]*/ 'ROLE_UNKNOWN';
+      console.log("🔐 Rôle utilisateur :", window.userRole);
+
+      // Fonction pour cacher les menus non autorisés
+      function applyRoleVisibility() {
+          if (window.userRole !== "ROLE_ADMIN") {
+              document.querySelectorAll(".admins, .detailA").forEach(el => el.style.display = "none");
+          }
+      }
+
+      // Exécution au chargement initial
+      document.addEventListener("DOMContentLoaded", applyRoleVisibility);
+  </script>
+</th:block>

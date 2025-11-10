@@ -1,21 +1,40 @@
 package com.gestion_equipment.gestion_equipement.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.gestion_equipment.gestion_equipement.dto.*;
 import com.gestion_equipment.gestion_equipement.model.*;
-import com.gestion_equipment.gestion_equipement.repository.FicheTechValeur_Repo;
 import com.gestion_equipment.gestion_equipement.repository.FilialeRepo;
 import com.gestion_equipment.gestion_equipement.service.*;
 
-
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 
 
@@ -27,13 +46,6 @@ private ConnexionDB connexionDB;
 @Autowired
 private FilialeRepo filialeRepo;
 
-@Autowired
- private  FicheTechValeur_Repo ficheTechValeurRepo;
-
-@Autowired
- private  RapportService rapportService;
-
- 
     private FilialeService serviceService;
     private UtilisateurService utilisateurService;
     private EquipementService equipementService;
@@ -56,6 +68,8 @@ private FilialeRepo filialeRepo;
         this.filialeService=filialeService;
 
     }
+
+
 
     @PostMapping("/addFiliale")
     public ResponseEntity<Filiale> addFiliale(@RequestBody Filiale filiale){
@@ -115,14 +129,6 @@ private FilialeRepo filialeRepo;
     return ficheTechService.getAllFicheTechs();
     }
    
-    // @PostMapping("/addProprietaire")
-    // public ResponseEntity<EquipementInstance> addProprietaire(@RequestBody EquipementInstDTO dto,Principal principal) {
-
-    // EquipementInstance saved = equipmentInstService.createProprietaireWithValeurs(dto, principal.getName());
-    //     return ResponseEntity.ok(saved);
-    // }
-    
-
     @GetMapping("/Proprietaires")
     public List<ProprietaireEquipementDTO> getAllProprietaires() {
     return equipmentInstService.getAllProprietaire();
@@ -217,6 +223,7 @@ private FilialeRepo filialeRepo;
         Filiale updated = filialeService.updateFiliale(id, filiale);
         return ResponseEntity.ok(updated);
     }
+    
   
     @GetMapping("/equipement-instance/{idEquipementInstance}")
     public ResponseEntity<List<FicheTechValeurDTO>> getFichesByEquipementInstance(
@@ -271,9 +278,184 @@ private FilialeRepo filialeRepo;
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 }
-    
-    // @GetMapping("/Proprietaires/FicheTechvalue")
-    // public List<ProprietaireEquipementDTO> getAllProprietairesAndFTV() {
-    // return equipmentInstService.getAllProprietaireAndFTV();
-    // }
+   
+@PostMapping("/addEquipementAndFicheTech")
+public ResponseEntity<?> createEquipement(@RequestBody EquipementFichesDTO dto) {
+    try {
+        // Validation basique
+        if (dto.getLibelleEquipement() == null || dto.getLibelleEquipement().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Le libellé de l'équipement est obligatoire"
+            ));
+        }
+        
+        Equipement equipement = ficheTechService.createEquipementWithFiches(dto);      
+        return ResponseEntity.ok(Map.of(
+            "success", true,
+            "message", "Équipement créé avec succès",
+            "equipement", equipement
+        ));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(Map.of(
+            "success", false,
+            "message", "Erreur lors de la création : " + e.getMessage()
+        ));
+    }
+}
+
+@GetMapping("/detailsReport")
+public ResponseEntity<List<EquipementInstProprietaireDTO>> getDetailInstForReport() {
+    List<EquipementInstProprietaireDTO> details = equipmentInstService.getDetailsInstancesAvecFicheTech();
+    return ResponseEntity.ok(details);
+}
+
+@PostMapping("/addProprietaire")
+public ResponseEntity<EquipementInstance> addProprietaire(@RequestBody EquipementInstDTO dto,Principal principal) {
+
+    EquipementInstance saved = equipmentInstService.createProprietaireWithValeurs(dto, principal.getName());
+        return ResponseEntity.ok(saved);
+    }
+ 
+@PutMapping("/{id}/scanner")
+public ResponseEntity<?> updateScanner(
+        @PathVariable Long id,
+        @RequestParam(value = "file", required = false) MultipartFile file) {
+
+    try {
+        // 1️⃣ Mettre à jour le flag scanner dans la BDD
+        EquipementInstance equipement = equipmentInstService.updateScanner(id);
+
+        // 2️⃣ Si un fichier est envoyé, on le sauvegarde
+        if (file != null && !file.isEmpty()) {
+            // Dossier de stockage (à adapter à ton chemin réel)
+            Path dossier = Paths.get("D:\\rapports_scannes");
+            if (!Files.exists(dossier)) {
+                Files.createDirectories(dossier);
+            }
+
+            // Nom du fichier, exemple: equipement_1.pdf
+            String nomFichier = "DocumentEquipementScanné_" + id + ".pdf";
+            Path cheminFichier = dossier.resolve(nomFichier);
+
+            // Sauvegarde sur disque
+            Files.copy(file.getInputStream(), cheminFichier, StandardCopyOption.REPLACE_EXISTING);
+
+            // Enregistrer le chemin du fichier en base (si tu as un champ pour ça)
+            // equipement.setScannerPath(cheminFichier.toString());
+            // equipementInstrepo.save(equipement);
+        }
+
+        // ✅ Retourner une réponse JSON
+        Map<String, Object> response = new HashMap<>();
+        response.put("idEquipementInstance", equipement.getIdEquipementInstance());
+        response.put("scanner", equipement.isScanner());
+
+        return ResponseEntity.ok(response);
+
+    } catch (EntityNotFoundException e) {
+        return ResponseEntity.notFound().build();
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erreur lors de la mise à jour du scanner");
+    }
+}
+
+@GetMapping("/scanner/{id}")
+public ResponseEntity<Resource> getScannedDocument(@PathVariable Long id) throws IOException {
+    String nomFichier = "DocumentEquipementScanné_" + id + ".pdf";
+    Path filePath = Paths.get("D:\\rapports_scannes").resolve(nomFichier);
+
+    if (!Files.exists(filePath)) {
+        return ResponseEntity.notFound().build();
+    }
+System.out.println("🔍 Vérification du fichier : " + filePath.toAbsolutePath());
+    Resource resource = new UrlResource(filePath.toUri());
+
+    return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_PDF) // 👈 on force le type PDF
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + nomFichier + "\"")
+            .body(resource);
+}
+
+@GetMapping("/detailsRapport/{id}")
+public void getDetailReportById(@PathVariable Long id, HttpServletResponse response) throws Exception {
+    // 1️⃣ Récupérer les infos d’un seul équipement
+    EquipementInstProprietaireDTO dto = equipmentInstService.getDetailsInstancesAvecFicheTech()
+            .stream()
+            .filter(item -> id.equals(item.getIdEquipementInst()))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Aucun équipement trouvé avec ID " + id));
+
+    List<EquipementInstProprietaireDTO> list = List.of(dto);
+    JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
+
+    // 2️⃣ Charger le rapport
+    InputStream reportStream = getClass().getResourceAsStream("/reports/detailsEquipement.jrxml");
+    if (reportStream == null) {
+        throw new IllegalStateException("Le fichier Document_Equipement.jrxml est introuvable !");
+    }
+
+    JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+    // 3️⃣ Paramètres
+    Map<String, Object> params = new HashMap<>();
+    params.put("TitreRapport", "Document - " + dto.getEquipement());
+
+    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
+
+    // 4️⃣ Envoyer le PDF dans la réponse HTTP
+    response.setContentType("application/pdf");
+    response.setHeader("Content-Disposition", "inline; filename=fiche_technique_" + id + ".pdf");
+    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+}
+   
+@GetMapping("/scannerr/{id}")
+public  void getDetailReport(@PathVariable Long id , HttpServletResponse response) throws JRException, IOException {
+    // 1️⃣ Récupérer les données de ton DTO
+       EquipementInstProprietaireDTO dto = equipmentInstService.getDetailsInstancesAvecFicheTech()
+        .stream()
+        .filter(item -> id.equals(item.getIdEquipementInst()))
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("Aucun équipement trouvé avec ID " + id));  
+
+    // 2️⃣ Charger le fichier .jrxml
+    InputStream reportStream = getClass().getResourceAsStream("/reports/detailsEquipement.jrxml");
+    JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+    // 3️⃣ Préparer les paramètres ($P{})
+    Map<String, Object> params = new HashMap<>();
+    params.put("nomProprietaire", dto.getNomProprietaire());
+    params.put("prenomProprietaire", dto.getPrenomProprietaire());
+    params.put("direction", dto.getDirection());
+    params.put("departement", dto.getDepartement());
+    params.put("fonction", dto.getFonction());
+    params.put("dateDajout", java.sql.Timestamp.valueOf(dto.getDateDajout())); // 🕒 corrige le format
+    params.put("equipement", dto.getEquipement());
+    params.put("matricule", dto.getMatricule());
+    params.put("nomFiliale", dto.getNomFiliale());
+
+    // ⚙️ Si ton rapport affiche la liste des valeurs techniques
+    // (FicheTechValeurDTO : nom, valeur, etc.)
+    // tu peux les passer comme une dataSource secondaire
+     // 5️⃣ Créer la source de données principale (une seule ligne)
+    // 4️⃣ Sous-dataset : valeurs techniques (Dataset1 dans le .jrxml)
+    List<FicheTechValeurDTO> valeurs = dto.getValeurs() != null ? dto.getValeurs() : List.of();
+    JRBeanCollectionDataSource sousData = new JRBeanCollectionDataSource(valeurs);
+    params.put("Dataset1", sousData);
+
+    // 5️⃣ DataSource principale : une seule ligne du DTO
+    JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(List.of(dto));
+
+    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
+
+    // 8️⃣ Configuration de la réponse HTTP — 📄 affichage inline (pas de téléchargement)
+    response.setContentType("application/pdf");
+    response.setHeader("Content-Disposition", "inline; filename=rapport_" + id + ".pdf");
+
+    // 9️⃣ Écrire le PDF dans le flux de réponse
+    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+}
+ 
 }

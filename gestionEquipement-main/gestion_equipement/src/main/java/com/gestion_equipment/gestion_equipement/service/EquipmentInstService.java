@@ -2,6 +2,7 @@ package com.gestion_equipment.gestion_equipement.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.gestion_equipment.gestion_equipement.dto.*;
 import com.gestion_equipment.gestion_equipement.model.*;
 import com.gestion_equipment.gestion_equipement.repository.*;
+
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 
@@ -89,12 +92,11 @@ public EquipementInstance createProprietaireWithValeurs(EquipementInstDTO dto, S
 public List<EquipementInstance> getAllEquipementInsts( ) {
         return equipementInstrepo.findAll();
     } 
+
 public List<EquipementInstance> getProprietairebyEquipement(Long equipementId ) {
         return equipementInstrepo.findByEquipement_IdEquipement( equipementId);
     }
     
-
-
 public List<ProprietaireEquipementDTO> getAllProprietaire() {
     List<EquipementInstance> instances = equipementInstrepo.findAll();
 
@@ -110,7 +112,6 @@ public List<ProprietaireEquipementDTO> getAllProprietaire() {
         return dto;
     }).collect(Collectors.toList());
 }
-
 // ===== SERVICE : updateProprietaire (CORRIGÉ SELON LES ENTITIES) =====
 @Transactional
 public ProprietaireEquipementDTO updateProprietaire(Long idEquipementInst, ProprietaireEquipementDTO dto) {
@@ -155,7 +156,7 @@ public ProprietaireEquipementDTO updateProprietaire(Long idEquipementInst, Propr
     instance.setDirection(dto.getDirection());
     instance.setFonction(dto.getFonction());
     instance.setUnite(dto.getUnite());
-    
+   instance.setScanner(false);   
     equipementInstrepo.save(instance);
 
     // 5️ Retourner le DTO de réponse
@@ -170,6 +171,7 @@ public ProprietaireEquipementDTO updateProprietaire(Long idEquipementInst, Propr
     result.setUnite(instance.getUnite());
     result.setDateDajout(instance.getDateCreation());
     result.setEquipement(instance.getEquipement().getLibelle());
+    instance.setScanner(false);
     result.setAjouterPar(instance.getUtilisateur() != null ? instance.getUtilisateur().getNom() : "N/A");
   
     
@@ -244,7 +246,6 @@ public List<ProprietaireEquipementDTO> getProprietairesAvecValeurs(
         return proprietaires;
     }
 
-
 public List<EquipementInstProprietaireDTO> getDetailsInstances() {
         try {
            
@@ -254,6 +255,36 @@ public List<EquipementInstProprietaireDTO> getDetailsInstances() {
             throw new RuntimeException("Erreur lors de la récupération des instances", e);
         }
     }
+// Service ireport
+ public List<EquipementInstProprietaireDTO> getDetailsInstancesAvecFicheTech() {
+        try {
+            // Étape 1 : récupérer les informations de base sur les équipements et propriétaires
+            List<EquipementInstProprietaireDTO> instances = equipementInstrepo.findDetailsInst();
+            // Si aucune instance trouvée → on retourne une liste vide
+            if (instances == null || instances.isEmpty()) {
+                return Collections.emptyList();
+            }
+            // Étape 2 : pour chaque instance, récupérer les valeurs de la fiche technique
+            for (EquipementInstProprietaireDTO dto : instances) {
+                List<FicheTechValeurDTO> valeursFiche =
+               ficheTechValeurRepo.findValeursAvecLibelleByEquipementInst(dto.getIdEquipementInst());
+                // On les rattache au DTO (assure-toi d’avoir un setter ou champ pour cela)
+                dto.setValeurs(valeursFiche);
+            }
+            return instances;
 
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la récupération des détails d'instances avec fiche technique", e);
+        }
+    }
+
+@Transactional
+public EquipementInstance updateScanner(Long id) {
+        EquipementInstance equipement = equipementInstrepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Equipement non trouvé avec l'ID: " + id));
+        
+        equipement.setScanner(!equipement.isScanner());
+        return equipementInstrepo.save(equipement);
+    }
 }
-

@@ -19,4 +19,5 @@ public class EquipementInstDTO {
     private String departement;
     private String fonction;
     private String unite;
+    private boolean scanner;
 }

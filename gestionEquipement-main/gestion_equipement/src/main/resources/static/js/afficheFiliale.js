@@ -140,7 +140,7 @@ $(document).on("click", ".btn-updateFiliale", function () {
 
   updateFiliale(filialeId, updatedData)
     .then(data => {
-      customAlert("✅ Filiale mise à jour avec succès !");
+      customAlert("✅ Filiale mise à jour avec succès !","success",true);
       console.log("📦 Réponse :", data);
          $('#TableFiliale').DataTable().ajax.reload(null, false);
       $("#modal").hide();
@@ -180,3 +180,27 @@ function closeModal() {
   // Reset du flag listener
   isEquipementSelectListenerAdded = false;
 }
+function customAlert(message, type = "success", closeModal = false) {
+  const overlay = document.createElement("div");
+  overlay.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;justify-content:center;align-items:center;z-index:9999;";
+  
+  const buttonColor = type === "success" ? "#198754" : "#dc3545";
+  
+  const box = document.createElement("div");
+  box.style.cssText = "background:#fff;padding:2vw;border-radius:5px;text-align:center;min-width:40vw;box-shadow:0 5px 15px rgba(0,0,0,0.3);";
+  box.innerHTML = `
+    <p style="font-family:sans-serif;font-size:16px;font-weight:600;">${message}</p>
+    <button id="ok-btn" style="background:${buttonColor};border:none;padding:8px 16px;border-radius:6px;color:white;font-weight:bold;cursor:pointer;">OK</button>
+  `;
+  
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  
+  document.getElementById("ok-btn").addEventListener("click", () => {
+    overlay.remove();
+    if (closeModal) $("#modal").hide();
+  });
+}
+
+
+document.addEventListener("DOMContentLoaded", initFilialeTable);

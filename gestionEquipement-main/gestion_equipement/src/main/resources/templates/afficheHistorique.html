@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{sideBarMenu}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +10,7 @@
     <title>proprietaire</title>
 </head>
 <body>
+<section layout:fragment="content">
   <div class="content_main">
   <div class="menu">
     <button type="button" onclick="openModalProprietaire('/pageAddProprietaire' ,'','Ajouter un proprietaire ')">Ajouter un proprietaire</button> 
@@ -26,7 +29,7 @@
  </div>
  
   <div class="Table_container mt-4">
-    <table id="TableEquipementHistorique" class="table table-bordered table-striped mt-3" style="width:100%">
+    <table id="TableEquipementHistorique" class="table table-bordered table-striped mt-3" >
      <thead class="table-dark">
     <tr>
       <th>Nom propriétaire(ancien)</th>
@@ -36,6 +39,7 @@
       <th>Date d'ajout (ancien)</th>
       <th>Detail</th>
     </tr>
+   
 
 </thead>
         <tbody>
@@ -43,9 +47,10 @@
         </tbody>
     </table>
 </div> 
-
 </div>
- 
-      <script src="/js/pageHistorique.js"></script>
+  <script src="/js/toggleMenu.js"></script>
+<script src="/js/afficheHistorique.js"></script>
+</section>
+
 </body>
 </html>

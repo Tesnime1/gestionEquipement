@@ -14,6 +14,7 @@ public class Utilisateur {
 
     @Column(unique = true, nullable = false)
     private String nom;
+     @Column(nullable = false)
     private String password;
     
     private LocalDateTime dateCreation;

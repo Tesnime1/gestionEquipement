@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{sideBarMenu}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
@@ -7,6 +9,7 @@
     <title>equipement</title>
 </head>
 <body>
+<section layout:fragment="content">
   <div class="content_main">
   <div class="menu">
     <button type="button" onclick="openModal('/pageAddEquipement', '', 'Ajouter une Equipement')">Ajouter Equipement</button>
@@ -24,21 +27,32 @@
     </div>
   </div>
  </div>
-   <div class="Table_container mt-4">
-    <table id="TableEquipement" class="table table-bordered table-striped mt-3" style="width:100%">
+<div class="Table_container TableEquipement mt-4">
+  <h6>Liste des Equipements</h6>
+    <table id="TableEquipement" class="table table-bordered table-striped mt-3" >
+  
         <thead class="table-dark">
             <tr>
                 <th>Nom </th>
                 <th>Détail</th>  
                 <th>Action</th>    
             </tr>
+     <tr>
+      <th><input type="text" placeholder="Filtrer par nom" /></th>
+      <th><input type="text" placeholder="Filtrer par détail" /></th>
+      <th></th> <!-- pas de filtre pour Action -->
+    </tr>
         </thead>
-        <tbody>
-            <!-- Rempli via JavaScript -->
-        </tbody>
-    </table>
+  <tbody></tbody>
+</table>
 </div>  
 </div>
-      <script src="/js/pageEquipement.js"></script> 
+<style>.dataTables_filter {
+  display: none !important;
+}</style>
+<script src="/js/toggleMenu.js"></script>
+<script src="js/afficheEquipement.js"></script>
+</section>
+
 </body>
 </html>
