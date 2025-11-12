@@ -117,6 +117,7 @@ private FilialeRepo filialeRepo;
         List<EquipementInstProprietaireDTO> details = equipmentInstService.getDetailsInstances();
         return ResponseEntity.ok(details);
     }
+   
     @PostMapping("/addFichTech")
     public ResponseEntity<List<FicheTechnique>> addFicheTech(@RequestBody FicheTechRequest request) {
     
@@ -176,6 +177,7 @@ private FilialeRepo filialeRepo;
         FicheTechnique updated = ficheTechService.updateLibelle(id, ficheMaj.getLibelle());
         return ResponseEntity.ok(updated);
     }
+
     @GetMapping("/search")
     public ResponseEntity<List<ProprietaireEquipementDTO>> getProprietairesAvecValeurs(
             @RequestParam(required = false) Long equipementId,
@@ -317,51 +319,6 @@ public ResponseEntity<EquipementInstance> addProprietaire(@RequestBody Equipemen
         return ResponseEntity.ok(saved);
     }
  
-@PutMapping("/{id}/scanner")
-public ResponseEntity<?> updateScanner(
-        @PathVariable Long id,
-        @RequestParam(value = "file", required = false) MultipartFile file) {
-
-    try {
-        // 1️⃣ Mettre à jour le flag scanner dans la BDD
-        EquipementInstance equipement = equipmentInstService.updateScanner(id);
-
-        // 2️⃣ Si un fichier est envoyé, on le sauvegarde
-        if (file != null && !file.isEmpty()) {
-            // Dossier de stockage (à adapter à ton chemin réel)
-            Path dossier = Paths.get("D:\\rapports_scannes");
-            if (!Files.exists(dossier)) {
-                Files.createDirectories(dossier);
-            }
-
-            // Nom du fichier, exemple: equipement_1.pdf
-            String nomFichier = "DocumentEquipementScanné_" + id + ".pdf";
-            Path cheminFichier = dossier.resolve(nomFichier);
-
-            // Sauvegarde sur disque
-            Files.copy(file.getInputStream(), cheminFichier, StandardCopyOption.REPLACE_EXISTING);
-
-            // Enregistrer le chemin du fichier en base (si tu as un champ pour ça)
-            // equipement.setScannerPath(cheminFichier.toString());
-            // equipementInstrepo.save(equipement);
-        }
-
-        // ✅ Retourner une réponse JSON
-        Map<String, Object> response = new HashMap<>();
-        response.put("idEquipementInstance", equipement.getIdEquipementInstance());
-        response.put("scanner", equipement.isScanner());
-
-        return ResponseEntity.ok(response);
-
-    } catch (EntityNotFoundException e) {
-        return ResponseEntity.notFound().build();
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Erreur lors de la mise à jour du scanner");
-    }
-}
-
 @GetMapping("/scanner/{id}")
 public ResponseEntity<Resource> getScannedDocument(@PathVariable Long id) throws IOException {
     String nomFichier = "DocumentEquipementScanné_" + id + ".pdf";
@@ -378,39 +335,7 @@ System.out.println("🔍 Vérification du fichier : " + filePath.toAbsolutePath(
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + nomFichier + "\"")
             .body(resource);
 }
-
-@GetMapping("/detailsRapport/{id}")
-public void getDetailReportById(@PathVariable Long id, HttpServletResponse response) throws Exception {
-    // 1️⃣ Récupérer les infos d’un seul équipement
-    EquipementInstProprietaireDTO dto = equipmentInstService.getDetailsInstancesAvecFicheTech()
-            .stream()
-            .filter(item -> id.equals(item.getIdEquipementInst()))
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("Aucun équipement trouvé avec ID " + id));
-
-    List<EquipementInstProprietaireDTO> list = List.of(dto);
-    JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
-
-    // 2️⃣ Charger le rapport
-    InputStream reportStream = getClass().getResourceAsStream("/reports/detailsEquipement.jrxml");
-    if (reportStream == null) {
-        throw new IllegalStateException("Le fichier Document_Equipement.jrxml est introuvable !");
-    }
-
-    JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-
-    // 3️⃣ Paramètres
-    Map<String, Object> params = new HashMap<>();
-    params.put("TitreRapport", "Document - " + dto.getEquipement());
-
-    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
-
-    // 4️⃣ Envoyer le PDF dans la réponse HTTP
-    response.setContentType("application/pdf");
-    response.setHeader("Content-Disposition", "inline; filename=fiche_technique_" + id + ".pdf");
-    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
-}
-   
+  
 @GetMapping("/scannerr/{id}")
 public  void getDetailReport(@PathVariable Long id , HttpServletResponse response) throws JRException, IOException {
     // 1️⃣ Récupérer les données de ton DTO
@@ -457,5 +382,82 @@ public  void getDetailReport(@PathVariable Long id , HttpServletResponse respons
     // 9️⃣ Écrire le PDF dans le flux de réponse
     JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 }
- 
+
+@GetMapping("/detailsRapport/{id}")
+public void getDetailReportById(@PathVariable Long id, HttpServletResponse response) throws Exception {
+    // 1️⃣ Récupérer les infos d’un seul équipement
+    EquipementInstProprietaireDTO dto = equipmentInstService.getDetailsInstancesAvecFicheTech()
+            .stream()
+            .filter(item -> id.equals(item.getIdEquipementInst()))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Aucun équipement trouvé avec ID " + id));
+
+    List<EquipementInstProprietaireDTO> list = List.of(dto);
+    JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
+
+    // 2️⃣ Charger le rapport
+    InputStream reportStream = getClass().getResourceAsStream("/reports/detailsEquipement.jrxml");
+    if (reportStream == null) {
+        throw new IllegalStateException("Le fichier Document_Equipement.jrxml est introuvable !");
+    }
+
+    JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+    // 3️⃣ Paramètres
+    Map<String, Object> params = new HashMap<>();
+    params.put("TitreRapport", "Document - " + dto.getEquipement());
+
+    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
+
+    // 4️⃣ Envoyer le PDF dans la réponse HTTP
+    response.setContentType("application/pdf");
+    response.setHeader("Content-Disposition", "inline; filename=fiche_technique_" + id + ".pdf");
+    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+}
+
+@PutMapping("/{id}/scanner")
+public ResponseEntity<?> updateScanner(
+        @PathVariable Long id,
+        @RequestParam(value = "file", required = false) MultipartFile file) {
+
+    try {
+        // 1️⃣ Mettre à jour le flag scanner dans la BDD
+        EquipementInstance equipement = equipmentInstService.updateScanner(id);
+
+        // 2️⃣ Si un fichier est envoyé, on le sauvegarde
+        if (file != null && !file.isEmpty()) {
+            // Dossier de stockage (à adapter à ton chemin réel)
+            Path dossier = Paths.get("D:\\rapports_scannes");
+            if (!Files.exists(dossier)) {
+                Files.createDirectories(dossier);
+            }
+
+            // Nom du fichier, exemple: equipement_1.pdf
+            String nomFichier = "DocumentEquipementScanné_" + id + ".pdf";
+            Path cheminFichier = dossier.resolve(nomFichier);
+
+            // Sauvegarde sur disque
+            Files.copy(file.getInputStream(), cheminFichier, StandardCopyOption.REPLACE_EXISTING);
+
+            // Enregistrer le chemin du fichier en base (si tu as un champ pour ça)
+            // equipement.setScannerPath(cheminFichier.toString());
+            // equipementInstrepo.save(equipement);
+        }
+
+        // ✅ Retourner une réponse JSON
+        Map<String, Object> response = new HashMap<>();
+        response.put("idEquipementInstance", equipement.getIdEquipementInstance());
+        response.put("scanner", equipement.isScanner());
+
+        return ResponseEntity.ok(response);
+
+    } catch (EntityNotFoundException e) {
+        return ResponseEntity.notFound().build();
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erreur lors de la mise à jour du scanner");
+    }
+}
+
 }

@@ -25,13 +25,13 @@ function initEquipementProprietaireTable() {
     paging: false,
     scrollCollapse: true,
     scrollY: getScrollHeight(),
-    autoWidth: false,
+    autoWidth: true,
     ordering: true,
     info: false,
     lengthChange: false,
     
     language: { 
-      url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json",
+      url: "/js/i18n/fr-FR.json",
       emptyTable: "Aucune donnée disponible",
       zeroRecords: "Aucun résultat trouvé"
     },

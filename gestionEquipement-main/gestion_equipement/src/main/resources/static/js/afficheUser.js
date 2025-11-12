@@ -34,7 +34,7 @@ function initUserTable() {
     info: false,
     lengthChange: false,
     language: {
-      url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+      url: "/js/i18n/fr-FR.json"
     },
     columnDefs: [
       { orderable: false, targets: [1, 2] }

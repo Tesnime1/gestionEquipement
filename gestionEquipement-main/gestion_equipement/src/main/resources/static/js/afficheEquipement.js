@@ -25,7 +25,7 @@ function initEquipementTable() {
     info: false,
     lengthChange: false,
     language: {
-      url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json",
+      url: "/js/i18n/fr-FR.json",
       emptyTable: "Aucun équipement disponible",
       zeroRecords: "Aucun équipement trouvé",
       loadingRecords: "Chargement en cours..."
@@ -180,10 +180,9 @@ $(document).on("click", ".updateft", function () {
 
   updateFiche(Id, newLibelle)
     .then(data => {
-      customAlert("✅ Fiche technique mise à jour !","success",true);
+      customAlert("✅ Fiche technique mise à jour !","success",false);
          $('#TableEquipement').DataTable().ajax.reload(null, false);
       
-      modal.hide();
     })
     .catch(err => {
       customAlert("❌ Erreur lors de la mise à jour","error");

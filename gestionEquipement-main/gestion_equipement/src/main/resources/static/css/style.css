@@ -354,7 +354,7 @@ font-size: 10px !important;
 #TableEquipementHistorique,
 #TableParValeur,
 #TableFiliale{
-    width: 99% !important;
+    width: 100% !important;
       overflow: hidden; /* DataTables gère ses propres scrolls */
 
 }
@@ -364,11 +364,11 @@ font-size: 10px !important;
 /* Empêche le décalage visuel entre head et body du DataTable */
 .dataTables_scrollHeadInner, 
 .dataTables_scrollHeadInner table {
-  width: 99% !important;
+  width: 100% !important;
 }
 
 .dataTables_scrollBody table {
-  width: 99% !important;
+  width: 100% !important;
 }
 
 .form-control-sm {
