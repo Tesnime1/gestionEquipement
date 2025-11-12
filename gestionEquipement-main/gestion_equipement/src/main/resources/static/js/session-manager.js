@@ -2,7 +2,9 @@
 
 console.log("🔧 Session Manager chargé");
 
-/**Affiche l'overlay de session expirée*/
+/**
+ * Affiche l'overlay de session expirée
+ */
 function showSessionExpiredOverlay() {
   console.log("🚨 Affichage overlay session expirée");
   const overlay = document.getElementById('session-expired-overlay');
@@ -18,7 +20,9 @@ function showSessionExpiredOverlay() {
   }
 }
 
-/*** Déconnexion*/
+/**
+ * Déconnexion
+ */
 function logout() {
   console.log("🔒 Déconnexion...");
   fetch('/logout', {
@@ -28,6 +32,7 @@ function logout() {
   .then(() => window.location.href = '/auth')
   .catch(() => window.location.href = '/auth');
 }
+
 // ========================================
 // 1️⃣ INTERCEPTER XMLHttpRequest (jQuery, etc.)
 // ========================================
@@ -163,3 +168,5 @@ setInterval(checkSession, 3 * 60 * 1000);
 window.checkSession = checkSession;
 window.logout = logout;
 window.showSessionExpiredOverlay = showSessionExpiredOverlay;
+
+console.log("✅ Session Manager initialisé (XHR + Fetch interceptés)");

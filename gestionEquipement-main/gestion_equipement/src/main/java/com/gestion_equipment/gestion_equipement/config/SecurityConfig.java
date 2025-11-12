@@ -46,8 +46,8 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/css/**", "/js/**","/images/**","/error","/session/check").permitAll()
-                .requestMatchers("/home","/AfficheAddUser","/scannerr/**","/detailsRapport/**","/scanner/**","/pageAddEquipement","/addEquipement","/detailsReport/**","/Equipements","/FicheTechs","/addFichTech","/addProprietaire","/details","/pageAddFicheTech","/pageAddProprietaire","/equipement/**","/equipementFiches","/Proprietaires","/showProprietaires","/*/proprietaire","/*/ficheTechvalue","/showHistory","/historique","/*/updateFiliale","/*/updateFiche" ,"/pageAddFiliale","/NomIdFiliales","/Filiales","/equipement-instance/*","/test-connexion","/showResearchEquipementFiliale","/showFiliales","/showEquipements","/addFiliale","/addEquipement").hasAnyRole("ADMIN", "UTILISATEUR")
+                .requestMatchers("/","/session-expired", "/css/**", "/js/**","/images/**","/error","/session/check").permitAll()
+                .requestMatchers("/home","/auth/**","/AfficheAddUser","/scannerr/**","/detailsRapport/**","/scanner/**","/pageAddEquipement","/addEquipement","/detailsReport/**","/Equipements","/FicheTechs","/addFichTech","/addProprietaire","/details","/pageAddFicheTech","/pageAddProprietaire","/equipement/**","/equipementFiches","/Proprietaires","/showProprietaires","/*/proprietaire","/*/ficheTechvalue","/showHistory","/historique","/*/updateFiliale","/*/updateFiche" ,"/pageAddFiliale","/NomIdFiliales","/Filiales","/equipement-instance/*","/test-connexion","/showResearchEquipementFiliale","/showFiliales","/showEquipements","/addFiliale","/addEquipement").hasAnyRole("ADMIN", "UTILISATEUR")
                 .requestMatchers("/addUser","/Users","/showUsers").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
@@ -75,14 +75,22 @@ public class SecurityConfig {
                 // ⚠️ NE PAS mettre invalidSessionUrl ni expiredUrl
                 // On va gérer ça avec un handler personnalisé
             )
-            // ⚠️ Toujours retourner 401 pour session expirée
-            .exceptionHandling(exception -> exception
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.setContentType("application/json;charset=UTF-8");
-                    response.getWriter().write("{\"error\":\"Session expired\"}");
-                })
-            )
+        .exceptionHandling(exception -> exception
+        .authenticationEntryPoint((request, response, authException) -> {
+             // Vérifie si c’est une requête AJAX
+            String xhrHeader = request.getHeader("X-Requested-With");
+            if ("XMLHttpRequest".equalsIgnoreCase(xhrHeader)) {
+            // ✅ Si AJAX → renvoyer JSON (ton script le gérera)
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"error\":\"Session expired\"}");
+            } else {
+            // 🌐 Sinon → redirige vers page HTML "session-expirée"
+            response.sendRedirect("/session-expired");
+            }
+          })
+          )
+
             .logout(logout -> logout
         .logoutUrl("/logout")
         .logoutSuccessUrl("/auth")   // page de redirection après logout

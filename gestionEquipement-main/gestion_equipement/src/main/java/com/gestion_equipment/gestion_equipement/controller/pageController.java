@@ -41,14 +41,14 @@ public class pageController {
         response.put("user", auth.getName());
         return ResponseEntity.ok(response);
     }
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
-        if (session != null) {
+   
+@PostMapping("/logout")
+public ResponseEntity<?> logout(HttpSession session) {
+    if (session != null) {
             session.invalidate();
         }
         return ResponseEntity.ok().build();
     }
-
 @GetMapping("/home")
 public String homepage() {
     return "sideBarMenu";
@@ -70,6 +70,10 @@ public String loginpage(@RequestParam(value = "error", required = false) String 
     }
     
     return "auth";
+}
+@GetMapping("/session-expired")
+public String showSessionExpiredPage() {
+    return "sessionExpired"; // Un template Thymeleaf simple avec ton message ou un script pour afficher le popup
 }
     
 @GetMapping("/showFiliales")
