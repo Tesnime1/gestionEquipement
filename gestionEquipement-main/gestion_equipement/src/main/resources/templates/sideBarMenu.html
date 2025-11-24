@@ -1,87 +1,115 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
-    <link rel="stylesheet" href="/css/style.css">
-    
-      <!-- jQuery -->
-    <script src="/js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+    <!-- jQuery -->
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
     <!-- Select2 CSS & JS -->
-    <link href="/css/select2.min.css" rel="stylesheet" />
-    <script src="/js/select2.min.js"></script>
+    <link th:href="@{/css/select2.min.css}" rel="stylesheet" />
+    <script th:src="@{/js/select2.min.js}"></script>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
 
     <!-- Bootstrap JS -->
-    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <!-- DataTables CSS & JS -->
-    <link rel="stylesheet" href="/css/dataTables.bootstrap5.min.css">
-    <script src="/js/jquery.dataTables.min.js"></script>
-    <script src="/js/dataTables.bootstrap5.min.js"></script>
-    <link href="/css/fonts.css" rel="stylesheet">
-    <script src="/js/dataTables.responsive.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/dataTables.bootstrap5.min.css}" />
+    <script th:src="@{/js/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/js/dataTables.bootstrap5.min.js}"></script>
+    <link th:href="@{/css/fonts.css}" rel="stylesheet" />
+    <script th:src="@{/js/dataTables.responsive.min.js}"></script>
+    <script th:src="@{/js/i18n/fr-FR.js}"></script>
+    <script th:src="@{/js/session-manager.js}"></script>
+  </head>
+  <body>
+    <div class="main_container">
+      <!-- Barre latérale -->
+      <aside>
+        <h5>Gestion d'équipement</h5>
+        <nav>
+          <a class="filiale"
+            ><img th:src="@{/images/service.png}" alt="" /> Filiales</a
+          >
+          <div class="detailF">
+            <a th:href="@{/showFiliales}" class="load-page"
+              >Afficher la liste des Filiales</a
+            >
+          </div>
+          <a class="equipement"
+            ><img th:src="@{/images/equipement.png}" alt="" /> Équipements</a
+          >
+          <div class="detailE">
+            <a th:href="@{/showEquipements}" class="load-page">
+              Liste des équipements</a
+            >
+            <a th:href="@{/showProprietaires}" class="load-page">
+              Liste des proprietaires
+            </a>
+            <a th:href="@{/showHistory}" class="load-page">Historique</a>
+          </div>
+          <a class="admins"
+            ><img th:src="@{/images/users.png}" alt="" /> Utilisateurs</a
+          >
+          <div class="detailA">
+            <a th:href="@{/showUsers}" class="load-page"
+              >Afficher les utilisateurs</a
+            >
+          </div>
+          <a class="recherche"
+            ><img th:src="@{/images/recherche.png}" alt="" />Recherche</a
+          >
+          <div class="detailR">
+            <a th:href="@{/showResearchEquipement}" class="load-page"
+              >Equipement Par caracteristique</a
+            >
+          </div>
+          <a href="/logout">Logout</a>
+        </nav>
+      </aside>
 
-    <script src="/js/session-manager.js"></script>
-
-</head>
-<body>
-<div class="main_container">
-  <!-- Barre latérale -->
-  <aside>
-    <h2>Menu</h2>
-    <nav>
-      <a   class="filiale"><img src="/images/service.png" alt=""> filiales</a> 
-      <div class="detailF">
-     <a th:href="@{/showFiliales}" class="load-page">Afficher la liste des Filiales</a>
-      </div>
-      <a  class="equipement"><img src="/images/equipement.png" alt=""> Équipements</a> 
-      <div class="detailE">
-      <a th:href="@{/showEquipements}" class="load-page"> Liste des équipements</a>
-       <a th:href="@{/showProprietaires}" class="load-page"> Liste des proprietaires </a>
-      <a th:href="@{/showHistory}" class="load-page">Historique</a> 
-
-      </div>
-      <a class="admins"><img src="/images/users.png" alt=""> Utilisateurs</a>
-       <div class="detailA">
-      <a th:href="@{/showUsers}" class="load-page">Afficher les utilisateurs</a>
-      </div>
-      <a  class="recherche"><img src="/images/recherche.png" alt="">Recherche</a>
-      <div class="detailR">
-     <a th:href="@{/showResearchEquipement}"class="load-page">Equipement Par caracteristique</a> 
-      </div>
-       <a href="/logout">Logout</a>
-    </nav>
-  </aside>
-
-    <!-- 🧱 Contenu principal -->
-    <main id="content" class="flex-grow-1 p-4" layout:fragment="content">
-        Contenu des liens de Menu 
-            <div id="alert-container" class="position-fixed top-50 start-50 translate-middle" style="z-index: 9999; width: auto;"></div>
-
-    </main>
-</div>
+      <!-- 🧱 Contenu principal -->
+      <main id="content" class="flex-grow-1 p-4" layout:fragment="content">
+        Contenu des liens de Menu
+        <div
+          id="alert-container"
+          class="position-fixed top-50 start-50 translate-middle"
+          style="z-index: 9999; width: auto"></div>
+      </main>
+    </div>
 
     <!-- Overlay session expirée -->
     <div id="session-expired-overlay">
-        <div class="session-expired-content">
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="#dc3545" stroke-width="2"/>
-                <path d="M12 8V12M12 16H12.01" stroke="#dc3545" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <h2>Session Expirée</h2>
-            <p>Votre session a expiré pour des raisons de sécurité. Veuillez vous reconnecter.</p>
-            <button class="btn-logout" onclick="logout()">
-                🔒 Se reconnecter
-            </button>
-        </div>
+      <div class="session-expired-content">
+        <svg
+          width="80"
+          height="80"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="#dc3545" stroke-width="2" />
+          <path
+            d="M12 8V12M12 16H12.01"
+            stroke="#dc3545"
+            stroke-width="2"
+            stroke-linecap="round" />
+        </svg>
+        <h2>Session Expirée</h2>
+        <p>
+          Votre session a expiré pour des raisons de sécurité. Veuillez vous
+          reconnecter.
+        </p>
+        <button class="btn-logout" onclick="logout()">🔒 Se reconnecter</button>
+      </div>
     </div>
-   
- <script src="/js/index.js"></script> 
-<th:block th:replace="~{role-script :: script}"></th:block>
 
-</body>
+    <script th:src="@{/js/index.js}"></script>
+    <th:block th:replace="~{role-script :: script}"></th:block>
+  </body>
 </html>

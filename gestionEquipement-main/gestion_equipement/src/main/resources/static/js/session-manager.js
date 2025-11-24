@@ -1,12 +1,8 @@
 // js/session-manager.js
 
-console.log("🔧 Session Manager chargé");
 
-/**
- * Affiche l'overlay de session expirée
- */
+/*** Affiche l'overlay de session expirée*/
 function showSessionExpiredOverlay() {
-  console.log("🚨 Affichage overlay session expirée");
   const overlay = document.getElementById('session-expired-overlay');
   if (overlay) {
     overlay.style.display = 'flex';
@@ -24,7 +20,7 @@ function showSessionExpiredOverlay() {
  * Déconnexion
  */
 function logout() {
-  console.log("🔒 Déconnexion...");
+
   fetch('/logout', {
     method: 'POST',
     credentials: 'include'
@@ -140,7 +136,7 @@ function checkSession() {
     })
     .then(data => {
       if (data && data.valid) {
-        console.log("✅ Session valide");
+       
       } else {
         showSessionExpiredOverlay();
       }

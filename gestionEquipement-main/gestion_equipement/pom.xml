@@ -11,6 +11,10 @@
 	<groupId>com.gestion_equipment</groupId>
 	<artifactId>gestion_equipement</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
+	
+	<packaging>war</packaging>
+
 	<name>gestion_equipement</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -38,10 +42,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web-services</artifactId>
-		</dependency> -->
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -100,11 +104,20 @@
     <groupId>com.zaxxer</groupId>
     <artifactId>HikariCP</artifactId>
    </dependency>
+   
+    <!-- Ajouter ceci : exclure Tomcat embarqué si tu déploies sur un serveur externe -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-tomcat</artifactId>
+        <scope>provided</scope>
+    </dependency>
+
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
+			
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -116,6 +129,8 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+	
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

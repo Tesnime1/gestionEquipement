@@ -19,10 +19,21 @@ public interface FicheTechValeur_Repo extends JpaRepository<FicheTech_valeur,Lon
        "WHERE fv.equipementInstance.equipement.id = :equipementId")
 List<EquipementInstance> findEquipementInstancesByEquipement(@Param("equipementId") Long equipementId);
 
-       @Query("SELECT v FROM FicheTech_valeur v " +
-           "LEFT JOIN FETCH v.ficheTechnique " +
-           "WHERE v.equipementInstance.id = :idEquipementInstance")
-    List<FicheTech_valeur> findByEquipementInstance_Id(@Param("idEquipementInstance") Long idEquipementInstance);
+@Query("""
+    SELECT f, v
+    FROM FicheTechnique f
+    LEFT JOIN FicheTech_valeur v
+        ON v.ficheTechnique.id = f.idFicheTechnique
+        AND v.equipementInstance.id = :idEquipInst
+    WHERE f.equipement.id = (
+        SELECT ei.equipement.id
+        FROM EquipementInstance ei
+        WHERE ei.idEquipementInstance = :idEquipInst
+    )
+    ORDER BY f.idFicheTechnique
+""")
+List<Object[]> findAllFichesWithValeur(@Param("idEquipInst") Long idEquipInst);
+
 @Query("""
     SELECT new com.gestion_equipment.gestion_equipement.dto.FicheTechValeurDTO(
         v.idFtvaleur,

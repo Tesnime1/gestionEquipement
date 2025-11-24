@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 public class EquipementInstFilialeDTO {
     private Long idFiliale;
     private String direction;
-    private String departement;
-   
+    private String departement;  
     private String fonction;
     
 }

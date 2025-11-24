@@ -14,12 +14,14 @@ public class HistoriqueEquipement {
     private LocalDateTime dateModification;
     private LocalDateTime ancienneDate; 
     private String ancienNomProprietaire;
-     private String ancienPrenomProprietaire;
+    private String ancienPrenomProprietaire;
     private String ancienneMatricule;
     private String ancienNomFiliale;
     private String nouveauProprietaire;
     private String modifiePar;
     private String ancienProprietaireAjoutePar;
+    private String motif;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipement_instance_id", nullable = false)
@@ -72,5 +74,7 @@ public class HistoriqueEquipement {
     public Utilisateur getUtilisateur() { return utilisateur; }
     public void setUtilisateur(Utilisateur utilisateur) { this.utilisateur = utilisateur; }
     
+    public String getMotif() {return motif;}
+    public void setMotif(String motif) {this.motif = motif;}
  
 }

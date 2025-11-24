@@ -65,17 +65,55 @@ public class FicheTechService {
         return ficheTechRepo.findByEquipement_IdEquipement(idEquipement);
     }
    
-  
-    public FicheTechnique updateLibelle(Long id, String newLibelle) {
+   public FicheTechnique updateLibelle(Long id, String newLibelle) {
         FicheTechnique fiche = ficheTechRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Fiche introuvable avec id " + id));
 
         fiche.setLibelle(newLibelle);
         return ficheTechRepo.save(fiche);
     }
-   
-@Transactional
-public Equipement createEquipementWithFiches(EquipementFichesDTO dto) {
+
+    @Transactional
+    public EquipementFichesDTO updateEquipementAndFiches(EquipementFichesDTO dto) {
+
+     // Récupérer l'utilisateur connecté
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Utilisateur user = utilisateurRepo.findByNom(username)
+            .orElseThrow(() -> new RuntimeException("Utilisateur introuvable : " + username));
+
+    LocalDateTime now = LocalDateTime.now();
+
+    // ---- ÉQUIPEMENT ----
+    Equipement equipement = equipementRepo.findById(dto.getIdEquipement())
+        .orElseThrow(() -> new RuntimeException("Équipement introuvable"));
+
+    equipement.setLibelle(dto.getLibelleEquipement());
+    equipement.setDateCreation(now);
+    equipement.setUtilisateur(user);
+
+    equipementRepo.save(equipement);
+
+    // ---- FICHES TECHNIQUES ----
+    if (dto.getFiches() != null) {
+        for (FicheTechnique ficheDTO : dto.getFiches()) {
+
+            FicheTechnique fiche = ficheTechRepo.findById(ficheDTO.getIdFicheTechnique())
+                .orElseThrow(() -> new RuntimeException("Fiche introuvable"));
+
+            fiche.setLibelle(ficheDTO.getLibelle());
+            fiche.setDateCreation(now);
+            fiche.setUtilisateur(user);
+
+            ficheTechRepo.save(fiche);
+        }
+    }
+
+    dto.setDate(now);
+    return dto;
+}
+
+    @Transactional
+    public Equipement createEquipementWithFiches(EquipementFichesDTO dto) {
     // Récupérer l'utilisateur connecté
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     Utilisateur user = utilisateurRepo.findByNom(username)

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+    <title>add Service</title>
+  </head>
+  <body>
+    <div class="container-add">
+      <form
+        class="form-add"
+        id="addFiliale"
+        data-endpoint="/addFiliale"
+        autocomplete="off">
+        <div class="input-group flex-nowrap">
+          <span class="input-group-text" id="addon-wrapping"
+            >nom de la Filiale :</span
+          >
+          <input
+            name="nameFiliale"
+            type="text"
+            class="form-control"
+            aria-label="Username"
+            aria-describedby="addon-wrapping" />
+        </div>
+
+        <div class="input-group flex-nowrap">
+          <span class="input-group-text" id="addon-wrapping">adresse :</span>
+          <input
+            name="adresseIp"
+            type="text"
+            class="form-control"
+            aria-label="adresse bdd"
+            aria-describedby="addon-wrapping" />
+        </div>
+
+        <div class="input-group flex-nowrap">
+          <span class="input-group-text" id="addon-wrapping"
+            >nom base de Données :</span
+          >
+          <input
+            name="nomBdd"
+            type="text"
+            class="form-control"
+            aria-label="nom bdd"
+            aria-describedby="addon-wrapping" />
+        </div>
+
+        <div class="input-group flex-nowrap">
+          <span class="input-group-text" id="addon-wrapping"
+            >User de base de donnees :</span
+          >
+          <input
+            name="userBdd"
+            type="text"
+            class="form-control"
+            aria-label="Username"
+            aria-describedby="addon-wrapping" />
+        </div>
+
+        <div class="input-group flex-nowrap">
+          <span class="input-group-text" id="addon-wrapping"
+            >mot de passe :
+          </span>
+          <input
+            name="passwordBdd"
+            type="text"
+            class="form-control"
+            aria-label="Username"
+            aria-describedby="addon-wrapping" />
+        </div>
+
+        <button type="submit">Ajouter</button>
+      </form>
+    </div>
+    <script th:src="@{/js/formAdd.js}">
+      // Fonction Ajax avec jQuery
+    </script>
+  </body>
+</html>

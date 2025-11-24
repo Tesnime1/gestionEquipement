@@ -1,4 +1,3 @@
-
 // ------ Popup proprietaie
 // Variables globales (déclarées une seule fois)
 let allEquipements = []; // Cache pour les équipements
@@ -9,18 +8,16 @@ let equipementTableInstance = null;
 let currentEquipementId = null;
 
 function getScrollHeight() {
-  return ($(window).height() -170) + "px";
+  return $(window).height() - 170 + "px";
 }
 
 function initEquipementProprietaireTable() {
-  console.log("📊 Initialisation DataTable Équipements Propriétaire");
-
-  if ($.fn.DataTable.isDataTable('#TableEquipementProprietaire')) {
-    $('#TableEquipementProprietaire').DataTable().destroy();
+  if ($.fn.DataTable.isDataTable("#TableEquipementProprietaire")) {
+    $("#TableEquipementProprietaire").DataTable().destroy();
   }
 
-  let table = $('#TableEquipementProprietaire').DataTable({
-      dom: 'ft',
+  let table = $("#TableEquipementProprietaire").DataTable({
+    dom: "ft",
     searching: true,
     paging: false,
     scrollCollapse: true,
@@ -29,122 +26,118 @@ function initEquipementProprietaireTable() {
     ordering: true,
     info: false,
     lengthChange: false,
-    
-    language: { 
+
+    language: {
       url: "/js/i18n/fr-FR.json",
       emptyTable: "Aucune donnée disponible",
-      zeroRecords: "Aucun résultat trouvé"
+      zeroRecords: "Aucun résultat trouvé",
     },
- ajax: { 
+    ajax: {
       url: "/details",
       dataSrc: "",
-      error: function( error) {
+      error: function (error) {
         console.error("❌ Erreur chargement:", error);
         console.log("Réponse serveur:", xhr.responseText);
-      }
+      },
     },
     columns: [
-   
       { data: "matricule", className: "text-left" },
-      { data: "nomProprietaire", className: "text-left" },
-      { data: "prenomProprietaire", className: "text-left" },
+      { data: "proprietaire", className: "text-left" },
+
       { data: "equipement", className: "text-left" },
       { data: "ajouterPar", className: "text-left" },
-      { 
+      {
         data: "dateDajout",
         className: "text-center",
-        render: function(data) {
+        render: function (data) {
           return data ? new Date(data).toLocaleDateString("fr-FR") : "—";
-        }
+        },
       },
       {
-    data: null,
-    orderable: false,
-    searchable: false,
-    className: "text-center",
-    render: (data, type, row) => {
-      return `
+        data: null,
+        orderable: false,
+        searchable: false,
+        className: "text-center",
+        render: (data, type, row) => {
+          return `
         <button class="btn btn-success btn-sm" 
                 data-row='${JSON.stringify(row).replace(/'/g, "&#39;")}'
                 onclick='showDetailsProprietaire(this)'>
           Modifier
         </button>`;
-    }
-  },
-  {
-    data: null,
-    orderable: false,
-    searchable: false,
-    className: "text-left",
-    render: (data, type, row) => {
-      return `
+        },
+      },
+      {
+        data: null,
+        orderable: false,
+        searchable: false,
+        className: "text-left",
+        render: (data, type, row) => {
+          return `
         <button class="btn btn-info btn-sm" 
                 data-row='${JSON.stringify(row).replace(/'/g, "&#39;")}'
                 onclick='showDetailsFicheTechValues(this)'>
           Fiche Tech
         </button>`;
-    }
-  },
-  {
-    data: null,
-    orderable: false,
-    searchable: false,
-    className: "text-left",
-    render: (data, type, row) => {
-      return `
+        },
+      },
+      {
+        data: null,
+        orderable: false,
+        searchable: false,
+        className: "text-left",
+        render: (data, type, row) => {
+          return `
         <button data-row='${JSON.stringify(row).replace(/'/g, "&#39;")}'
                 onclick='showPdf(this)'>
           <img src="/images/pdf.png" width="24" alt="PDF">
         </button>`;
-    }
-  },
-  {
-    data: null,
-    orderable: false,
-    searchable: false,
-    className: "text-left",
-    render: (data, type, row) => {
-      if (row.scanner === false) {
-        return `
+        },
+      },
+      {
+        data: null,
+        orderable: false,
+        searchable: false,
+        className: "text-left",
+        render: (data, type, row) => {
+          if (row.scanner === false) {
+            return `
           <button data-row='${JSON.stringify(row).replace(/'/g, "&#39;")}'
                   onclick='showScanner(this)'>
             <img src="/images/scannerr.png" width="24" alt="Scanner">
           </button>`;
-      } else {
-        return `
+          } else {
+            return `
           <button data-row='${JSON.stringify(row).replace(/'/g, "&#39;")}'
                   onclick='showExistingScanner(this)'>
             <img src="/images/document.png" width="24" alt="Voir le document">
           </button>`;
-      }
-    }
-  },
-  { data: "idEquipementInst", visible: false },  
-],
-        
-   
-    
+          }
+        },
+      },
+      { data: "idEquipementInst", visible: false },
+    ],
 
-    drawCallback: function() {
+    drawCallback: function () {
       // Ajuste les colonnes pour bien aligner le thead/tbody après le rendu
       table.columns.adjust();
-    }
+    },
   });
 
   return table;
 }
 
 function showExistingScanner(button) {
-   const row = JSON.parse(button.getAttribute('data-row'));
+  const row = JSON.parse(button.getAttribute("data-row"));
   console.log(row);
   const id = row.idEquipementInst;
   console.log("📄 Afficher le document scanné...");
 
   // Construire l'URL du document
-  const url = `http://localhost:8080/scanner/${id}`;
+  const url = `/scanner/${id}`;
 
   // Insérer le PDF dans la modale via un iframe
-  const modalBody = document.getElementById('modal-body');
+  const modalBody = document.getElementById("modal-body");
   modalBody.innerHTML = `
     <iframe 
       src="${url}" 
@@ -155,14 +148,13 @@ function showExistingScanner(button) {
   $("#modal").css("display", "flex");
 }
 
-
 function showScanner(button) {
-   const row = JSON.parse(button.getAttribute('data-row'));
+  const row = JSON.parse(button.getAttribute("data-row"));
   console.log(row);
   console.log("📷 Ouvrir le scanner...");
   currentEquipementId = row.idEquipementInst;
 
-  const fileInput = document.getElementById('fileInput');
+  const fileInput = document.getElementById("fileInput");
 
   // ✅ Réinitialiser avant d'ouvrir (mais pas après le click)
   fileInput.value = "";
@@ -171,7 +163,7 @@ function showScanner(button) {
   fileInput.click();
 
   // Quand un fichier est sélectionné
-  fileInput.onchange = function(event) {
+  fileInput.onchange = function (event) {
     const file = event.target.files[0];
     if (file) {
       const fileURL = URL.createObjectURL(file);
@@ -181,146 +173,182 @@ function showScanner(button) {
 }
 
 function showPopup(fileURL) {
-  const modal = document.getElementById('modal-document');
-  const modalBody = document.getElementById('modalDocument-body');
+  const modal = document.getElementById("modal-document");
+  const modalBody = document.getElementById("modalDocument-body");
 
   modalBody.innerHTML = `
     <iframe src="${fileURL}" allow="none"
             style="width:100%;height:80vh;border:none;border-radius:8px;">
     </iframe>
   `;
-  modal.style.display = 'flex';
+  modal.style.display = "flex";
 }
 
 function updateScanner() {
-    if (!currentEquipementId) {
-        alert('Aucun équipement sélectionné');
-        return;
-    }
+  if (!currentEquipementId) {
+    alert("Aucun équipement sélectionné");
+    return;
+  }
 
-    const fileInput = document.getElementById('fileInput');
-    if (!fileInput.files[0]) {
-        alert("Veuillez choisir un fichier à uploader !");
-        return;
-    }
+  const fileInput = document.getElementById("fileInput");
+  if (!fileInput.files[0]) {
+    alert("Veuillez choisir un fichier à uploader !");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("file", fileInput.files[0]);
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
 
-    const button = event.target;
-    button.disabled = true;
-    button.textContent = 'Mise à jour...';
+  const button = event.target;
+  button.disabled = true;
+  button.textContent = "Mise à jour...";
 
-    fetch(`/${currentEquipementId}/scanner`, {
-        method: 'PUT', // ✅ ou PUT si ton controller l’accepte bien
-        body: formData
-        // ❌ ne pas mettre Content-Type ici
+  fetch(`/${currentEquipementId}/scanner`, {
+    method: "PUT", // ✅ ou PUT si ton controller l’accepte bien
+    body: formData,
+    // ❌ ne pas mettre Content-Type ici
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("Erreur lors de la mise à jour");
+      return response.json();
     })
-    .then(response => {
-        if (!response.ok) throw new Error('Erreur lors de la mise à jour');
-        return response.json();
+    .then((data) => {
+      button.textContent = data.scanner
+        ? "Document scanné ✓"
+        : "Document non scanné";
+      button.classList.add(data.scanner ? "btn-success" : "btn-warning");
+      customAlert("Document mis à jour avec succès!", "success");
+      $("#TableEquipementProprietaire").DataTable().ajax.reload();
     })
-    .then(data => {
-        button.textContent = data.scanner ? 'Document scanné ✓' : 'Document non scanné';
-        button.classList.add(data.scanner ? 'btn-success' : 'btn-warning');
-        customAlert('Document mis à jour avec succès!', 'success');
-        $('#TableEquipementProprietaire').DataTable().ajax.reload();
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        button.textContent = 'Erreur - Réessayer';
-        button.classList.add('btn-danger');
-        customAlert('Erreur lors de la mise à jour', 'error');
+    .catch((error) => {
+      console.error("Erreur:", error);
+      button.textContent = "Erreur - Réessayer";
+      button.classList.add("btn-danger");
+      customAlert("Erreur lors de la mise à jour", "error");
     })
     .finally(() => {
-        button.disabled = false;
+      button.disabled = false;
     });
 }
 
 function openModalProprietaire(url, defaultNom, title) {
-  
   $("#modal-body").load(url, function () {
     $("#modal").css("display", "flex");
-    
+
     // Définir le titre si fourni
     if (title) {
       $("#modal .nav-popup h4").text(title);
     }
-    
+
     // Pré-remplir le champ nom si fourni
     const inputNom = $("#modal-body").find("input[type='text']").first();
     if (inputNom.length && defaultNom) {
       inputNom.val(defaultNom);
     }
-    
+
     // Reset du flag listener
     isEquipementSelectListenerAdded = false;
-    
+
     // Charger les équipements et configurer le listener
     setTimeout(() => {
-     
       loadFilialesInSelect();
       populateEquipementSelectFromCache();
       setupEquipementChangeListener();
       setupFilialeChangePourListeEmployes();
       onProprietaireSelect();
-        initSelect2();
-
-      
+      initSelect2();
     }, 100);
   });
 }
-function closeModal() { 
+function closeModal() {
   $("#modal").css("display", "none");
   $("#modal-body").empty();
-  
+
   // Reset du flag listener
   isEquipementSelectListenerAdded = false;
 }
-function closeModalDoc() { 
+function closeModalDoc() {
   $("#modal-document").css("display", "none");
   $("#modalDocument-body").empty();
-  
+
   // Reset du flag listener
   isEquipementSelectListenerAdded = false;
 }
 // ===== updateDetailsProprietaire =====
 function updateDetailsProprietaire(idEquipementInst) {
-  // Récupérer les valeurs sélectionnées
-  const nomProprietaireValue = document.getElementById("nomProprietaire-select").value;
-  const filialeId = document.getElementById("filiale-select").value;
-  
-  if (!nomProprietaireValue) {
-    customAlert("Veuillez sélectionner un propriétaire");
+  // Filiale (toujours requise)
+  const filialeSelect = document.getElementById("filiale-select");
+  const filialeId = filialeSelect ? filialeSelect.value : null;
+  const Motif = document.getElementById("motif").value;
+  if (!Motif) {
+    customAlert("Veuillez sélectionner un motif", "error");
     return;
   }
-
   if (!filialeId) {
-    customAlert("Veuillez sélectionner une filiale");
+    customAlert("Veuillez sélectionner une filiale", "error");
     return;
   }
 
-  // Récupérer l'option sélectionnée
-  const selectedOption = document.getElementById("nomProprietaire-select").options[
-    document.getElementById("nomProprietaire-select").selectedIndex
-  ];
+  // Cases
+  const chkDept = document.getElementById("chk-departement");
+  const chkNouveau = document.getElementById("chk-nouveau");
 
-  // Récupérer tous les attributs data stockés dans l'option
-  const matricule = selectedOption.getAttribute('data-matricule') || '';
-  const nom = selectedOption.getAttribute('data-nom') || '';
-  const prenom = selectedOption.getAttribute('data-prenom') || '';
-  const direction = selectedOption.getAttribute('data-direction') || '';
-  const departement = selectedOption.getAttribute('data-departement') || '';
-  const fonction = selectedOption.getAttribute('data-fonction') || '';
-  const unite = selectedOption.getAttribute('data-unite') || '';
-  
-  // Récupérer le nom de la filiale
-  const filialeOption = document.getElementById("filiale-select").options[
-    document.getElementById("filiale-select").selectedIndex
-  ];
-  const nomFiliale = filialeOption.text;
+  let nom = "";
+  let prenom = "";
+  let matricule = "";
+  let direction = "";
+  let departement = "";
+  let fonction = "";
+  let unite = "";
 
-  // Construire le payload
+  if (chkDept && chkDept.checked) {
+    // Cas : Département informatique choisi -> on prend les valeurs des champs cachés / du bloc dept
+    matricule = document.getElementById("matricule-hidden")?.value || "001";
+    nom =
+      document.getElementById("nom-hidden")?.value ||
+      "Département informatique";
+    direction =
+      document.getElementById("direction")?.value || "Direction informatique";
+    departement =
+      document.getElementById("departement")?.value ||
+      "Département informatique";
+  } else if (chkNouveau && chkNouveau.checked) {
+    // Cas : Nouveau propriétaire -> on lit l'option sélectionnée
+    const select = document.getElementById("nomProprietaire-select");
+    const selectedIndex = select ? select.selectedIndex : -1;
+    if (!select || selectedIndex <= 0) {
+      // index 0 = placeholder
+      customAlert("Veuillez sélectionner un propriétaire", "error");
+      return;
+    }
+    const selectedOption = select.options[selectedIndex];
+    matricule = selectedOption.getAttribute("data-matricule") || "";
+    nom = selectedOption.getAttribute("data-nom") || selectedOption.value || "";
+    prenom = selectedOption.getAttribute("data-prenom") || "";
+    direction = selectedOption.getAttribute("data-direction") || "";
+    departement = selectedOption.getAttribute("data-departement") || "";
+    fonction = selectedOption.getAttribute("data-fonction") || "";
+    unite = selectedOption.getAttribute("data-unite") || "";
+  } else {
+    // Ni nouveau ni département -> on peut utiliser les champs cachés si tu veux récupérer l'actuel
+    // Essaye d'utiliser les valeurs existantes si disponibles
+    matricule = document.getElementById("matricule-hidden")?.value || "";
+    nom = document.getElementById("nom-hidden")?.value || "";
+    prenom = document.getElementById("prenom-hidden")?.value || "";
+
+    if (!nom && !prenom) {
+      customAlert(
+        "Aucun propriétaire sélectionné. Cochez 'Nouveau propriétaire' ou 'Département Informatique'.",
+        "error"
+      );
+      return;
+    }
+  }
+
+  // récupérer le nom de la filiale pour affichage/envoyer
+  const filialeOption = filialeSelect.options[filialeSelect.selectedIndex];
+  const nomFiliale = filialeOption ? filialeOption.text : "";
+
   const payload = {
     nomProprietaire: nom,
     prenomProprietaire: prenom,
@@ -329,8 +357,9 @@ function updateDetailsProprietaire(idEquipementInst) {
     direction: direction,
     fonction: fonction,
     unite: unite,
-    filialeId: parseInt(filialeId),
-    nomFiliale: nomFiliale
+    filialeId: Number(filialeId),
+    nomFiliale: nomFiliale,
+    motif: document.getElementById("motif").value,
   };
 
   console.log("📤 Données à envoyer :", payload);
@@ -338,481 +367,607 @@ function updateDetailsProprietaire(idEquipementInst) {
   fetch(`/${idEquipementInst}/proprietaire`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   })
-  .then(res => {
-    if (!res.ok) throw new Error("Erreur HTTP " + res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("✅ Mise à jour réussie :", data);
-    customAlert("Mise à jour effectuée avec succès !");
-    $("#modal").hide();
-
-    // Rafraîchir la datatable
-    $('#TableEquipementProprietaire').DataTable().ajax.reload();
-  })
-  .catch(err => {
-    console.error("❌ Erreur mise à jour :", err);
-    customAlert("Erreur lors de la mise à jour : " + err.message);
-  });
+    .then((res) => {
+      if (!res.ok) throw new Error("Erreur HTTP " + res.status);
+      return res.json();
+    })
+    .then((data) => {
+      console.log("✅ Mise à jour réussie :", data);
+      customAlert("Mise à jour effectuée avec succès !");
+      $("#modal").hide();
+      $("#TableEquipementProprietaire").DataTable().ajax.reload();
+    })
+    .catch((err) => {
+      console.error("❌ Erreur mise à jour :", err);
+      customAlert("Erreur lors de la mise à jour : " + err.message, "error");
+    });
 }
-function  showDetailsFicheTechValues(button) {
- const row = JSON.parse(button.getAttribute('data-row'));
-  console.log(row);
+
+function showDetailsFicheTechValues(button) {
+  const row = JSON.parse(button.getAttribute("data-row"));
 
   let html = ` <div class="p-3">
       <h6 class="mt-3">Fiche technique :</h6>
       <ul class="list-group" id="fiche-tech-list">
   `;
- // Charger les fiches techniques via AJAX
+  // Charger les fiches techniques via AJAX
   $.ajax({
     url: `/equipement-instance/${row.idEquipementInst}`,
-    method: 'GET',
-    success: function(valeurs) {
-        console.log("✅ Fiches techniques chargées:", valeurs);
+    method: "GET",
+    success: function (valeurs) {
+      console.log("✅ Fiches techniques chargées:", valeurs);
 
-  if (valeurs && valeurs.length > 0) {
-    valeurs.forEach(v => {
-      html += `
-        <li class="list-group-item" >
-          <label class="form-label">${v.libelleFiche}</label>
-          <input class="form-control fiche-input"   data-id="${v.idValeur}"  value="${v.valeur}" >
+      if (valeurs && valeurs.length > 0) {
+        valeurs.forEach((v) => {
+          html += `
+          <li class="list-group-item">
+             <div class="input-group flex-nowrap">
+              <span class="input-group-text" id="addon-wrapping">${v.libelleFiche}</span>
+          <input class="form-control fiche-input"   data-id="${v.idValeur}"  data-fiche-id="${v.ficheTechId}" value="${v.valeur}" required>
         </li>`;
-    });
-  } else {
-    html += `<li class="list-group-item">Aucune fiche technique disponible</li>`;
-  }
+        });
+      } else {
+        html += `<li class="list-group-item">Aucune fiche technique disponible</li>`;
+      }
 
-  html += `
+      html += `
       </ul>
       <div class="mt-3 text-end">
         <button class="btn btn-success btn-sm" onclick="updateDetailsFicheValues(${row.idEquipementInst})">Modifier</button>
       </div>
     </div>
   `;
-  console.log("👉 Valeurs reçues :", row.valeurs);
-  $("#modal-body").html(html);
-  $("#modal .nav-popup h4").text("Détail propriétaire");
-  $("#modal").css("display", "flex");
-}});
+
+      $("#modal-body").html(html);
+      $("#modal .nav-popup h4").text("Détail propriétaire");
+      $("#modal").css("display", "flex");
+    },
+  });
 }
 function showDetailsProprietaire(button) {
- const row = JSON.parse(button.getAttribute('data-row'));
+  const row = JSON.parse(button.getAttribute("data-row"));
   console.log(row);
-  let html = ` <div class="p-3">
-      <div class="mb-2">
-        <label class="form-label">Équipement :</label>
-        <input class="form-control" value="${row.equipement}" readonly>
-      </div>
+  let html = `
+<div class="p-3">
+    <span>Détails du proprietaire :</span>
 
-      <div class="mb-2">
-        <label class="form-label">Propriétaire :</label>
-        <input class="form-control" id="input-nom-proprietaire" type="hidden" value="${row.nomFiliale}" ><br>
-       <input class="form-control" id="input-nom-proprietaire" value="${row.matricule}" readonly><br>
-        <input class="form-control" id="input-nom-proprietaire" value="${row.nomProprietaire}"readonly><br>
-         <input class="form-control" id="input-nom-proprietaire" value="${row.prenomProprietaire}" readonly>   
+    <!-- Infos actuelles -->
+    <div class="input-group flex-nowrap">
+        <span class="input-group-text">Équipement:</span>
+        <input value="${
+          row.equipement
+        }" type="text" class="form-control" readonly>
+    </div>
+
+    <div class="input-group flex-nowrap">
+        <span class="input-group-text">Propriétaire:</span>
+      
+            <input class="form-control " value="${row.nomFiliale}" readonly>
+            <input class="form-control " value="${row.matricule}" readonly>
+            <input class="form-control " value="${row.proprietaire}" readonly>
           
-      </div>
-      <div class="mb-2">
-       <label for="filiale-select">nouvelle Filiale :</label>
-       <select class="form-control"  name="filiale" id="filiale-select" required>
-       <option value="">⏳ Chargement des filiales...</option>
-      </select>
-      </div>
+    </div>
 
-       <div class="mb-2">
-        <label class="form-label">nouveau Proprietaire :</label>
-       <select name="nomProprietaire" id="nomProprietaire-select" required>
-        <option value="">⏳ Chargement des proprietaires..</option>
-       </select> 
-      </div>
-
-      <div class="mb-2">
-      <input type="hidden" name="matricule" id="matricule-hidden">
-      <input type="hidden" name="nom" id="nom-hidden">
-      <input type="hidden" name="prenom"  id="prenom-hidden">
-
-      <div class="proprietaireDetailInput"  id="proprietaire-details">
-       <input type="text" id="direction" name="direction" readonly>
-       <input type="text" id="departement" name="departement" readonly>
-       <input type="text"  id="fonction"name="fonction" readonly>
-       <input type="text"  id="unite"name="unite" readonly>
-      </div>
-      <div class="mb-2">
-        <label class="form-label">Ajouté par :</label>
+    <div class="input-group flex-nowrap">
+        <span class="input-group-text">Ajouter par :</span>
         <input class="form-control" value="${row.ajouterPar}" readonly>
-      </div>
-       <div class="mb-2">
-        <label class="form-label">scanner:</label>
+    </div>
+
+    <div class="input-group flex-nowrap">
+        <span class="input-group-text">Scanner:</span>
         <input class="form-control" value="${row.scanner}" readonly>
-      </div>
+    </div>
 
-      <div class="mb-2">
-        <label class="form-label">Date :</label>
-        <input class="form-control" value="${new Date(row.dateDajout).toLocaleDateString("fr-FR")}" readonly>
-      </div>
+    <div class="input-group flex-nowrap">
+        <span class="input-group-text">Date:</span>
+        <input class="form-control" value="${new Date(
+          row.dateDajout
+        ).toLocaleDateString("fr-FR")}" readonly>
+    </div>
+        <span >Modifier le propriétaire :</span>
+ <div class="mt-3 p-3 border rounded bg-light">
+    <!-- Filiale -->
+    <div class="mb-2">
+        <label class="form-label small">Nouvelle Filiale :</label>
+        <select class="form-select form-select-sm" id="filiale-select">
+            <option value="">⏳ Chargement...</option>
+        </select>
+    </div>
 
-      <h6 class="mt-3">Fiche technique :</h6>
-        <div id="fiche-tech-loader" class="text-center">
-        <div class="spinner-border" role="status">
-        <span class="visually-hidden">Chargement...</span>
-      </div>
+    <!-- Choix -->
+    <div class="d-flex gap-3 mb-2 small">
+        <label><input type="checkbox" id="chk-nouveau"> Nouveau propriétaire</label>
+        <label><input type="checkbox" id="chk-departement"> Département Informatique</label>
+    </div>
+
+    <!-- Nouveau propriétaire -->
+    <div class="mb-2" id="bloc-select-proprietaire" style="display:none;">
+        <label class="form-label small">Nouveau propriétaire</label>
+        <select class="form-select form-select-sm" id="nomProprietaire-select">
+            <option value="">⏳ Chargement...</option>
+        </select>
+    </div>
+
+    <!-- Infos propriétaire -->
+    <div id="proprietaire-details" style="display:none;">
+        <input type="hidden" id="matricule-hidden">
+        <input type="hidden" id="nom-hidden">
+        <input type="hidden" id="prenom-hidden">
+
+        <div class="row g-2">
+            <div class="col-6"><input type="text" id="direction" class="form-control form-control-sm" readonly></div>
+            <div class="col-6"><input type="text" id="departement" class="form-control form-control-sm" readonly></div>
+            <div class="col-6"><input type="text" id="fonction" class="form-control form-control-sm" readonly></div>
+            <div class="col-6"><input type="text" id="unite" class="form-control form-control-sm" readonly></div>
+        </div>
+    </div>
+
+    <!-- Valeurs département IT -->
+    <div id="dept-info-values" style="display:none;">
+        <span data-matricule="001"></span>
+        <span data-nom="departement informatique"></span>
+        <span data-prenom=""></span>
+        <span data-direction="Direction informatique"></span>
+        <span data-departement="departement informatique"></span>
+        <span data-fonction=""></span>
+        <span data-unite="unite informatique"></span>
+    </div>
+
+    <!-- Motif -->
+    <div class="mt-2">
+        <label class="form-label small">Motif :</label>
+        <select id="motif" class="form-select form-select-sm" style="width:100%;">
+            <option value="">Sélectionner un motif</option>
+            <option value="Réattribution depuis le stock">Réattribution depuis le stock</option>
+            <option value="Changement de service">Changement de service</option>
+            <option value="Réparation">Réparation</option>
+            <option value="Remplacement">Remplacement</option>
+            <option value="Fin de contrat">Fin de contrat</option>
+            <option value="Nouveau besoin utilisateur">Nouveau besoin utilisateur</option>
+            <option value="Changement de fonction">Changement de fonction</option>
+           
+        </select>
+    </div>
+
+</div>
+
+    <h6 class="mt-3">Fiche technique :</h6>
+    <div id="fiche-tech-loader" class="text-center">
+        <div class="spinner-border" role="status"></div>
     </div>
     <ul class="list-group" id="fiche-tech-list"></ul>
-  `;
 
-  html += `
-      </ul>
-      <div class="mt-3 text-end">
-        <button class="btn btn-success btn-sm" onclick="updateDetailsProprietaire(${row.idEquipementInst})">Modifier</button>
-      </div>
+    <div class="mt-3 text-end">
+        <button class="btn btn-success btn-sm" onclick="updateDetailsProprietaire(${
+          row.idEquipementInst
+        })">Modifier</button>
     </div>
-  `;
+</div>
+`;
+
   $("#modal-body").html(html);
+
+  // 🔥 Masquer ces blocs au chargement
+  document.getElementById("bloc-select-proprietaire").style.display = "none";
+  document.getElementById("proprietaire-details").style.display = "none";
+  $("#motif").select2({
+    tags: true, // permet d’ajouter une nouvelle valeur
+    placeholder: "Sélectionner ou écrire un motif",
+    allowClear: true,
+  });
   $("#modal .nav-popup h4").text("Détail propriétaire");
   $("#modal").css("display", "flex");
-   setTimeout(() => {
+  setTimeout(() => {
     loadFilialesInSelect();
-    setupFilialeChangePourListeEmployes(); 
+    setupFilialeChangePourListeEmployes();
     onProprietaireSelect();
     initSelect2();
     // Charger les fiches techniques
     chargerFichesTeechniques(row.idEquipementInst);
     chargerDetailsFiliale();
+    initCheckboxLogic();
   }, 100);
 }
+
+function initCheckboxLogic() {
+  const chkNouveau = document.getElementById("chk-nouveau");
+  const chkDept = document.getElementById("chk-departement");
+  const blocSelect = document.getElementById("bloc-select-proprietaire");
+  const details = document.getElementById("proprietaire-details");
+
+  if (!chkNouveau || !chkDept) {
+    console.error("❌ Checkbox introuvable !");
+    return;
+  }
+
+  function uncheckOthers(selected) {
+    if (selected === "nouveau") chkDept.checked = false;
+    if (selected === "dept") chkNouveau.checked = false;
+  }
+
+  // ✔ Nouveau propriétaire
+  chkNouveau.addEventListener("change", () => {
+    if (chkNouveau.checked) {
+      uncheckOthers("nouveau");
+
+      blocSelect.style.display = "block";
+      details.style.display = "block";
+
+      document.getElementById("matricule-hidden").value = "";
+      document.getElementById("nom-hidden").value = "";
+      document.getElementById("prenom-hidden").value = "";
+    } else {
+      blocSelect.style.display = "none";
+      details.style.display = "none";
+    }
+  });
+
+  // ✔ Département Informatique
+  chkDept.addEventListener("change", () => {
+    if (chkDept.checked) {
+      uncheckOthers("dept");
+      blocSelect.style.display = "none";
+      details.style.display = "none";
+    } else {
+      details.style.display = "none";
+    }
+  });
+}
+
 function chargerFichesTeechniques(idEquipementInst) {
   $.ajax({
     url: `/equipement-instance/${idEquipementInst}`,
-    method: 'GET',
-    success: function(valeurs) {
-      let html = '';
+    method: "GET",
+    success: function (valeurs) {
+      let html = "";
       if (valeurs && valeurs.length > 0) {
-        valeurs.forEach(v => {
+        valeurs.forEach((v) => {
           html += `
             <li class="list-group-item">
-              <label class="form-label">${v.libelleFiche}</label>
+             <div class="input-group flex-nowrap">
+              <span class="input-group-text" id="addon-wrapping">${v.libelleFiche}</span>
               <input class="form-control fiche-input" data-id="${v.idValeur}" value="${v.valeur}" readonly>
             </li>`;
         });
       } else {
-        html = '<li class="list-group-item">Aucune fiche technique disponible</li>';
+        html =
+          '<li class="list-group-item">Aucune fiche technique disponible</li>';
       }
       $("#fiche-tech-list").html(html);
       $("#fiche-tech-loader").hide();
     },
-    error: function(xhr, status, error) {
+    error: function (xhr, status, error) {
       console.error("❌ Erreur :", error);
-      $("#fiche-tech-list").html('<li class="list-group-item text-danger">Erreur lors du chargement</li>');
+      $("#fiche-tech-list").html(
+        '<li class="list-group-item text-danger">Erreur lors du chargement</li>'
+      );
       $("#fiche-tech-loader").hide();
-    }
+    },
   });
 }
 function initSelect2() {
-    const $select = $('#nomProprietaire-select');
-    
-    // Vérifier que l'élément existe
-    if (!$select.length) {
-        console.warn(' Element nomProprietaire-select non trouvé');
-        return;
-    }
-    
-    // Vérifier que Select2 est disponible
-    if (typeof $.fn.select2 === 'undefined') {
-        console.error('❌ Select2 n\'est pas chargé !');
-        return;
-    }
-    
-    // Détruire Select2 s'il existe déjà
-    if ($select.hasClass("select2-hidden-accessible")) {
- 
-        $select.select2('destroy');
-    }
-    
-    // Initialiser Select2
-    try {
-        $select.select2({
-            placeholder: " Rechercher un employé...",
-            allowClear:false,
-            width: '85%',
-            padding:'5px',
-            dropdownParent: $('#modal').length ? $('#modal') : $(document.body), // Important pour les modals
-            language: {
-                noResults: function() {
-                    return "Aucun résultat trouvé";
-                },
-                searching: function() {
-                    return "Recherche en cours...";
-                }
-            }
-        });
-        $('#nomProprietaire-select').on('change', function () {
-    const valeurChoisie = $(this).val();
-    const messageDiv = document.getElementById('message');
+  const $select = $("#nomProprietaire-select");
 
-    if (valeurChoisie) {
+  // Vérifier que l'élément existe
+  if (!$select.length) {
+    console.warn(" Element nomProprietaire-select non trouvé");
+    return;
+  }
+
+  // Vérifier que Select2 est disponible
+  if (typeof $.fn.select2 === "undefined") {
+    console.error("❌ Select2 n'est pas chargé !");
+    return;
+  }
+
+  // Détruire Select2 s'il existe déjà
+  if ($select.hasClass("select2-hidden-accessible")) {
+    $select.select2("destroy");
+  }
+
+  // Initialiser Select2
+  try {
+    $select.select2({
+      placeholder: " Rechercher un employé...",
+      allowClear: false,
+      width: "85%",
+      padding: "5px",
+      dropdownParent: $("#modal").length ? $("#modal") : $(document.body), // Important pour les modals
+      language: {
+        noResults: function () {
+          return "Aucun résultat trouvé";
+        },
+        searching: function () {
+          return "Recherche en cours...";
+        },
+      },
+    });
+    $("#nomProprietaire-select").on("change", function () {
+      const valeurChoisie = $(this).val();
+      const messageDiv = document.getElementById("message");
+
+      if (valeurChoisie) {
         // Si une valeur est sélectionnée → cacher le message rouge
-        if (messageDiv) messageDiv.style.display = 'none';
-    }
-});
-
-  
-    } catch (error) {
-        console.error('❌ Erreur lors de l\'initialisation de Select2:', error);
-    }
+        if (messageDiv) messageDiv.style.display = "none";
+      }
+    });
+  } catch (error) {
+    console.error("❌ Erreur lors de l'initialisation de Select2:", error);
+  }
 }
 
 // Fonction pour charger les employés quand la filiale change
 function setupFilialeChangePourListeEmployes() {
-  const filialeSelect = document.getElementById('filiale-select');
-  const proprietaireSelect = $('#nomProprietaire-select');
+  const filialeSelect = document.getElementById("filiale-select");
+  const proprietaireSelect = $("#nomProprietaire-select");
 
   if (!filialeSelect || !proprietaireSelect.length) {
-    console.warn('⚠️ Éléments non trouvés');
+    console.warn("⚠️ Éléments non trouvés");
     return;
   }
 
-  $(filialeSelect).off('change.filiale').on('change.filiale', async function (e) {
-    const filialeId = e.target.value;
-    console.log('🏢 Filiale sélectionnée:', filialeId);
+  $(filialeSelect)
+    .off("change.filiale")
+    .on("change.filiale", async function (e) {
+      const filialeId = e.target.value;
+      console.log("🏢 Filiale sélectionnée:", filialeId);
 
-    // Si aucune filiale → réinitialiser proprement
-    if (!filialeId) {
-      proprietaireSelect.html('<option value="">-- Sélectionner une filiale d\'abord --</option>');
-      proprietaireSelect.prop('disabled', true);
-      proprietaireSelect.trigger('change.select2');
-      return;
-    }
-
-    // 💡 Ajouter un indicateur visuel de chargement sans bloquer le select
-    proprietaireSelect.html('<option value="">⏳ Chargement...</option>');
-    proprietaireSelect.prop('disabled', false);
-    proprietaireSelect.trigger('change.select2');
-
-    try {
-      const response = await fetch(`/${filialeId}/proprietaires`);
-      if (!response.ok) throw new Error(`Erreur ${response.status}`);
-
-      const employes = await response.json();
-      proprietaireSelect.empty();
-
-      if (!employes || employes.length === 0) {
-        proprietaireSelect.append('<option value="">Aucun employé trouvé</option>');
-      } else {
-        proprietaireSelect.append('<option value="">-- Sélectionner un employé --</option>');
-        employes.forEach(emp => {
-          proprietaireSelect.append(
-            `<option value="${emp.matricule}"
-              data-matricule="${emp.matricule || ''}"
-                data-nom="${emp.nom || ''}"
-                data-prenom="${emp.prenom || ''}"
-                data-direction="${emp.direction || ''}"
-                data-departement="${emp.departement || ''}"
-                data-fonction="${emp.fonction || ''}"
-                data-unite="${emp.unite || ''}">
-              ${emp.matricule} - ${emp.nom} ${emp.prenom}
-            </option>`
-          );
-        });
+      // Si aucune filiale → réinitialiser proprement
+      if (!filialeId) {
+        proprietaireSelect.html(
+          '<option value="">-- Sélectionner une filiale d\'abord --</option>'
+        );
+        proprietaireSelect.prop("disabled", true);
+        proprietaireSelect.trigger("change.select2");
+        return;
       }
 
-      // 🔄 Rafraîchir Select2 sans le recréer complètement
-      proprietaireSelect.trigger('change.select2');
+      // 💡 Ajouter un indicateur visuel de chargement sans bloquer le select
+      proprietaireSelect.html('<option value="">⏳ Chargement...</option>');
+      proprietaireSelect.prop("disabled", false);
+      proprietaireSelect.trigger("change.select2");
 
-      console.log('✅ Employés chargés :', employes.length);
-    } catch (error) {
-      console.error('❌ Erreur chargement employés:', error);
-      proprietaireSelect.html('<option value="">Erreur de chargement</option>');
-    }
-  });
+      try {
+        const response = await fetch(`/${filialeId}/proprietaires`);
+        if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+        const employes = await response.json();
+        proprietaireSelect.empty();
+
+        if (!employes || employes.length === 0) {
+          proprietaireSelect.append(
+            '<option value="">Aucun employé trouvé</option>'
+          );
+        } else {
+          proprietaireSelect.append(
+            '<option value="">-- Sélectionner un employé --</option>'
+          );
+          employes.forEach((emp) => {
+            proprietaireSelect.append(
+              `<option value="${emp.matricule}"
+              data-matricule="${emp.matricule || ""}"
+                data-nom="${emp.nom || ""}"
+                data-prenom="${emp.prenom || ""}"
+                data-direction="${emp.direction || ""}"
+                data-departement="${emp.departement || ""}"
+                data-fonction="${emp.fonction || ""}"
+                data-unite="${emp.unite || ""}">
+              ${emp.matricule} - ${emp.nom} ${emp.prenom}
+            </option>`
+            );
+          });
+        }
+
+        // 🔄 Rafraîchir Select2 sans le recréer complètement
+        proprietaireSelect.trigger("change.select2");
+
+        console.log("✅ Employés chargés :", employes.length);
+      } catch (error) {
+        console.error("❌ Erreur chargement employés:", error);
+        proprietaireSelect.html(
+          '<option value="">Erreur de chargement</option>'
+        );
+      }
+    });
 }
 
-function onProprietaireSelect(){
-$('#nomProprietaire-select').on('change', function () {
+function onProprietaireSelect() {
+  $("#nomProprietaire-select").on("change", function () {
     const selectedOption = this.options[this.selectedIndex];
 
     if (!selectedOption || !selectedOption.value) {
-        // Si rien n'est sélectionné → vider les champs + cacher le bloc
-        $('#direction').val('');
-        $('#departement').val('');
-        $('#fonction').val('');
-        $('#unite').val('');
-        $('.proprietaireDetailInput').css('display', 'none');
-        return;
+      // Si rien n'est sélectionné → vider les champs + cacher le bloc
+      $("#direction").val("");
+      $("#departement").val("");
+      $("#fonction").val("");
+      $("#unite").val("");
+      $(".proprietaireDetailInput").css("display", "none");
+      return;
     }
 
     // ✅ Récupérer les data-* stockées dans l'option sélectionnée
-    
+
     // Récupération des attributs stockés dans l'option
     const matricule = selectedOption.value;
-    const nom = selectedOption.getAttribute('data-nom') || '';
-    const prenom = selectedOption.getAttribute('data-prenom') || '';
-    const direction =  selectedOption.getAttribute('data-direction');
-    const departement = selectedOption.getAttribute('data-departement');
-    const fonction = selectedOption.getAttribute('data-fonction');
-    const unite = selectedOption.getAttribute('data-unite');
+    const nom = selectedOption.getAttribute("data-nom") || "";
+    const prenom = selectedOption.getAttribute("data-prenom") || "";
+    const direction = selectedOption.getAttribute("data-direction");
+    const departement = selectedOption.getAttribute("data-departement");
+    const fonction = selectedOption.getAttribute("data-fonction");
+    const unite = selectedOption.getAttribute("data-unite");
 
-   $('#matricule-hidden').val(matricule);
-    $('#nom-hidden').val(nom);
-    $('#prenom-hidden').val(prenom);
+    $("#matricule-hidden").val(matricule);
+    $("#nom-hidden").val(nom);
+    $("#prenom-hidden").val(prenom);
     //  Mettre les valeurs dans les inputs
-    $('#direction').val(direction);
-    $('#departement').val(departement);
-    $('#fonction').val(fonction);
-    $('#unite').val(unite);
+    $("#direction").val(direction);
+    $("#departement").val(departement);
+    $("#fonction").val(fonction);
+    $("#unite").val(unite);
 
     // ✅ Afficher les inputs
-    $('.proprietaireDetailInput').css('display', 'flex');
-});
+    $(".proprietaireDetailInput").css("display", "flex");
+  });
 }
 function chargerDetailsFiliale(filialeId, containerSelector) {
-    
+  const container = $(containerSelector);
+  console.log("📦 Container jQuery trouvé:", container.length, "élément(s)");
 
-    const container = $(containerSelector);
-    console.log("📦 Container jQuery trouvé:", container.length, "élément(s)");
-    
-    if (container.length === 0) {
-        console.error(`❌ Container ${containerSelector} introuvable dans le DOM`);
-        console.log("🔍 Containers disponibles:", 
-            Array.from(document.querySelectorAll('[id*="filiale"]')).map(el => '#' + el.id)
+  if (container.length === 0) {
+    console.error(`❌ Container ${containerSelector} introuvable dans le DOM`);
+    console.log(
+      "🔍 Containers disponibles:",
+      Array.from(document.querySelectorAll('[id*="filiale"]')).map(
+        (el) => "#" + el.id
+      )
+    );
+    return;
+  }
+
+  if (!filialeId) {
+    console.warn("⚠️ filialeId vide ou null");
+    container.html(
+      '<p class="text-muted">Veuillez sélectionner une filiale</p>'
+    );
+    return;
+  }
+
+  fetch(`/details-filiale/${filialeId}`)
+    .then((response) => {
+      console.log("📡 Réponse reçue, status:", response.status);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then((details) => {
+      container.empty();
+      if (!details || details.length === 0) {
+        container.append(
+          '<p class="alert alert-warning">Aucune donnée disponible pour cette filiale.</p>'
         );
         return;
-    }
+      }
 
-    if (!filialeId) {
-        console.warn("⚠️ filialeId vide ou null");
-        container.html('<p class="text-muted">Veuillez sélectionner une filiale</p>');
-        return;
-    }
+      const keys = Object.keys(details[0]).filter(
+        (key) =>
+          key !== "filialeId" &&
+          key !== "idFiliale" &&
+          key !== "idfiliale" &&
+          key !== "id"
+      );
+      console.log("🔑 Clés trouvées:", keys);
 
-    fetch(`/details-filiale/${filialeId}`)
-        .then(response => {
-            console.log("📡 Réponse reçue, status:", response.status);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(details => {
-            container.empty();
-            if (!details || details.length === 0) {
-                container.append('<p class="alert alert-warning">Aucune donnée disponible pour cette filiale.</p>');
-                return;
-            }
+      keys.forEach((key) => {
+        // Créer la div conteneur
+        const divContainer = $("<div>").addClass("fiche-row"); // ou toute autre classe CSS que tu veux
 
-const keys = Object.keys(details[0]).filter(key => key !== "filialeId" && key !== "idFiliale" && key !== "idfiliale" && key !== "id");         
-   console.log('🔑 Clés trouvées:', keys);
+        const label = $("<label>")
+          .attr("for", `${key}-select`)
+          .addClass("form-label")
+          .text(key.charAt(0).toUpperCase() + key.slice(1));
 
-          keys.forEach(key => {
-    // Créer la div conteneur
-    const divContainer = $('<div>')
-        .addClass('fiche-row'); // ou toute autre classe CSS que tu veux
+        const select = $("<select>")
+          .attr("id", `${key}-select`)
+          .attr("name", key)
+          .addClass("form-select");
+        select.append(`<option value="">-- Tous --</option>`);
 
-    const label = $('<label>')
-        .attr('for', `${key}-select`)
-        .addClass('form-label')
-        .text(key.charAt(0).toUpperCase() + key.slice(1));
+        const uniqueValues = new Set();
+        details.forEach((item) => {
+          if (item[key]) uniqueValues.add(item[key]);
+        });
 
-    const select = $('<select>')
-        .attr('id', `${key}-select`)
-        .attr('name', key)
-        .addClass('form-select');
-    select.append(`<option value="">-- Tous --</option>`);
+        console.log(`   ${key}: ${uniqueValues.size} valeurs uniques`);
 
+        uniqueValues.forEach((val) => {
+          select.append(`<option value="${val}">${val}</option>`);
+        });
+        // Ajouter le label et le select à la div
+        divContainer.append(label);
+        divContainer.append(select);
 
-                const uniqueValues = new Set();
-                details.forEach(item => {
-                    if (item[key]) uniqueValues.add(item[key]);
-                });
+        container.append(divContainer);
+      });
 
-                console.log(`   ${key}: ${uniqueValues.size} valeurs uniques`);
-
-                uniqueValues.forEach(val => {
-                    select.append(`<option value="${val}">${val}</option>`);
-                });
-                   // Ajouter le label et le select à la div
-                   divContainer.append(label);
-                   divContainer.append(select);
-
-                  container.append(divContainer);
-            });
-
-            console.log("✅ Formulaire généré avec succès");
-        })
-        .catch(err => {
-            console.error('❌ Erreur chargement détails filiale:', err);
-            container.html(`
+      console.log("✅ Formulaire généré avec succès");
+    })
+    .catch((err) => {
+      console.error("❌ Erreur chargement détails filiale:", err);
+      container.html(`
                 <div class="alert alert-danger">
                     <strong>❌ Erreur</strong><br>
                     ${err.message}
                 </div>
             `);
-        });
-    
-    console.log("🏁 === FIN chargerDetailsFiliale ===");
+    });
 }
 
 function loadFilialesInSelect() {
-
   // Un seul select à cibler
-  const selectFiliale = document.querySelector('#filiale-select');
+  const selectFiliale = document.querySelector("#filiale-select");
   if (selectFiliale) {
-    selectFiliale.innerHTML = '<option value="" > -- Sélectionnez une filiale--</option>';
-
+    selectFiliale.innerHTML =
+      '<option value="" > -- Sélectionnez une filiale--</option>';
   }
-  fetch('/NomIdFiliales')
-    .then(response => {
+  fetch("/NomIdFiliales")
+    .then((response) => {
       if (!response.ok) throw new Error("Erreur HTTP : " + response.status);
       return response.json();
     })
-    .then(filiales => {
+    .then((filiales) => {
       // Ajouter les options
-      filiales.forEach(filiale => {
-        const option = document.createElement('option');
-        option.value = filiale.idfiliale ;
+      filiales.forEach((filiale) => {
+        const option = document.createElement("option");
+        option.value = filiale.idfiliale;
         option.textContent = filiale.nomFiliale;
         selectFiliale.appendChild(option);
       });
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("❌ Erreur chargement filiales :", error);
-      selectFiliale.innerHTML = '<option value="">❌ Erreur de chargement</option>';
+      selectFiliale.innerHTML =
+        '<option value="">❌ Erreur de chargement</option>';
     });
 }
 function loadEquipementsInSelect() {
   console.log("📦 Chargement des équipements");
-  
-  const searchSelect = document.querySelector('.rechercheContainer #equipement-select');
-  const addSelect = document.querySelector('.container-add #equipement-select');
+
+  const searchSelect = document.querySelector(
+    ".rechercheContainer #equipement-select"
+  );
+  const addSelect = document.querySelector(".container-add #equipement-select");
 
   // Reset affichage initial
-  [searchSelect, addSelect].forEach(select => {
+  [searchSelect, addSelect].forEach((select) => {
     if (select) {
       select.innerHTML = '<option value="">⏳ Chargement...</option>';
     }
   });
 
-  fetch('/Equipements', {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Cache-Control': 'no-cache' }
+  fetch("/Equipements", {
+    method: "GET",
+    credentials: "include",
+    headers: { "Cache-Control": "no-cache" },
   })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) throw new Error("Erreur HTTP : " + response.status);
       return response.json();
     })
-    .then(equipements => {
+    .then((equipements) => {
       console.log(`✅ ${equipements.length} équipements chargés`);
-      
+
       allEquipements = equipements;
 
       [searchSelect, addSelect].forEach((select, index) => {
         if (select) {
-          select.innerHTML = '<option value="">-- Choisir un équipement --</option>';
+          select.innerHTML =
+            '<option value="">-- Choisir un équipement --</option>';
 
-          equipements.forEach(equipement => {
-            const option = document.createElement('option');
+          equipements.forEach((equipement) => {
+            const option = document.createElement("option");
             option.value = equipement.idEquipement || equipement.id;
             option.textContent = equipement.libelle;
             select.appendChild(option);
@@ -820,18 +975,23 @@ function loadEquipementsInSelect() {
 
           // ✅ Utiliser des namespaces différents pour éviter les conflits
           if (index === 0) {
-            $(select).off('change.search').on('change.search', handleSearchEquipementChange);
+            $(select)
+              .off("change.search")
+              .on("change.search", handleSearchEquipementChange);
           } else {
-            $(select).off('change.add').on('change.add', handleEquipementChange);
+            $(select)
+              .off("change.add")
+              .on("change.add", handleEquipementChange);
           }
         }
       });
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("❌ Erreur chargement équipements :", error);
-      [searchSelect, addSelect].forEach(select => {
+      [searchSelect, addSelect].forEach((select) => {
         if (select) {
-          select.innerHTML = '<option value="">❌ Erreur de chargement</option>';
+          select.innerHTML =
+            '<option value="">❌ Erreur de chargement</option>';
         }
       });
     });
@@ -839,7 +999,7 @@ function loadEquipementsInSelect() {
 // --------- GESTION ÉQUIPEMENTS DANS SELECT-------
 function populateEquipementSelectFromCache() {
   console.log("📋 Population du select depuis le cache");
-  
+
   const select = document.getElementById("equipement-select");
   if (!select) {
     console.warn("⚠️ Select equipement-select introuvable");
@@ -853,24 +1013,25 @@ function populateEquipementSelectFromCache() {
     return;
   }
 
-  select.innerHTML = '<option value="">-- Sélectionnez un équipement --</option>';
-  
-  allEquipements.forEach(eq => {
+  select.innerHTML =
+    '<option value="">-- Sélectionnez un équipement --</option>';
+
+  allEquipements.forEach((eq) => {
     const option = document.createElement("option");
     option.value = eq.idEquipement || eq.id;
     option.textContent = eq.libelleEquipement || eq.libelle;
     select.appendChild(option);
   });
-  
+
   console.log(`✅ ${allEquipements.length} équipements ajoutés au select`);
 }
 
 function handleEquipementChange(event) {
   const equipementId = event.target.value;
   const container = document.getElementById("fiche-valeurs-container");
-  
+
   console.log("📋 Changement équipement:", equipementId);
-  
+
   if (!container) {
     console.error("❌ Container 'fiche-valeurs-container' non trouvé !");
     return;
@@ -879,38 +1040,41 @@ function handleEquipementChange(event) {
   container.innerHTML = "";
 
   if (!equipementId || equipementId === "") {
-    container.innerHTML = "<p class='text-muted'>Veuillez sélectionner un équipement</p>";
+    container.innerHTML =
+      "<p class='text-muted'>Veuillez sélectionner un équipement</p>";
     return;
   }
 
   container.innerHTML = "<p>🔄 Chargement des fiches techniques...</p>";
 
   fetch(`/equipement/${equipementId}`, {
-    method: 'GET',
-    credentials: 'include'
+    method: "GET",
+    credentials: "include",
   })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       return response.json();
     })
-    .then(fiches => {
+    .then((fiches) => {
       if (!fiches || !Array.isArray(fiches) || fiches.length === 0) {
-        container.innerHTML = "<p class='alert alert-warning'>⚠️ Aucune fiche technique trouvée</p>";
+        container.innerHTML =
+          "<p class='alert alert-warning'>⚠️ Aucune fiche technique trouvée</p>";
         return;
       }
 
       let html = "<div class='fiches-techniques'><h6>Fiches techniques :</h6>";
-      
+
       fiches.forEach((fiche) => {
-        const ficheId = fiche.id_ficheTechnique || fiche.idFicheTechnique || fiche.id;
-        
+        const ficheId =
+          fiche.id_ficheTechnique || fiche.idFicheTechnique || fiche.id;
+
         if (!ficheId) {
           console.error("❌ ID fiche manquant:", fiche);
           return;
         }
-        
+
         html += `
           <div class="fiche-valeur-item mb-3 p-3 border rounded" data-fiche-id="${ficheId}">
             <label class="form-label fw-bold">${fiche.libelle}</label>
@@ -923,13 +1087,13 @@ function handleEquipementChange(event) {
           </div>
         `;
       });
-      
+
       html += "</div>";
       container.innerHTML = html;
-      
+
       console.log("✅ Fiches techniques affichées");
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("❌ Erreur chargement fiches :", error);
       container.innerHTML = `
         <div class="alert alert-danger">
@@ -947,77 +1111,99 @@ function setupEquipementChangeListener() {
   }
 
   const equipementSelect = document.getElementById("equipement-select");
-  
+
   if (!equipementSelect) {
     console.warn("⚠️ Select equipement-select introuvable");
     return;
   }
-  
+
   // ✅ Utiliser jQuery avec namespace
-  $(equipementSelect).off('change.fichetech').on('change.fichetech', handleEquipementChange);
+  $(equipementSelect)
+    .off("change.fichetech")
+    .on("change.fichetech", handleEquipementChange);
   isEquipementSelectListenerAdded = true;
   console.log("✅ Listener équipement attaché");
 }
 function updateDetailsFicheValues(idEquipementInst) {
-
   // Récupérer toutes les valeurs des fiches techniques
   const valeurs = [];
-  document.querySelectorAll("#fiche-tech-list .fiche-input").forEach(input => {
-    valeurs.push({
- idValeur: input.dataset.id,
-    valeur: input.value
+  document
+    .querySelectorAll("#fiche-tech-list .fiche-input")
+    .forEach((input) => {
+      valeurs.push({
+        idValeur:
+          input.dataset.id && input.dataset.id !== "null"
+            ? Number(input.dataset.id)
+            : null,
+        ficheTechId: input.dataset.ficheId
+          ? Number(input.dataset.ficheId)
+          : null,
+        valeur: input.value,
+      });
     });
-  });
-  const payload = { valeurs: valeurs };
+  for (const v of valeurs) {
+    if (!v.valeur || v.valeur.trim() === "") {
+      customAlert(
+        "Veuillez remplir toutes les valeurs avant de modifier.",
+        "error"
+      );
+      return;
+    }
+  }
+
+  const payload = { valeurs };
+
   console.log("📤 Données à envoyer :", payload);
 
   fetch(`/${idEquipementInst}/ficheTechvalue`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   })
-  .then(res => {
-    if (!res.ok) throw new Error("Erreur HTTP " + res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("✅ Mise à jour réussie :", data);
-    customAlert("Mise à jour effectuée avec succès !","success", true);
-    $("#modal").hide();
+    .then((res) => {
+      if (!res.ok) throw new Error("Erreur HTTP " + res.status);
+      return res.json();
+    })
+    .then((data) => {
+      console.log("✅ Mise à jour réussie :", data);
+      customAlert("Mise à jour effectuée avec succès !", "success", true);
 
-    // rafraîchir la datatable
-    $('#TableEquipementProprietaire').DataTable().ajax.reload();
-  })
-  .catch(err => {
-    console.error("❌ Erreur mise à jour :", err);
-    customAlert("Erreur lors de la mise à jour.");
-  });
+      // rafraîchir la datatable
+      $("#TableEquipementProprietaire").DataTable().ajax.reload();
+    })
+    .catch((err) => {
+      console.error("❌ Erreur mise à jour :", err);
+      customAlert("Erreur lors de la mise à jour.", "error");
+    });
 }
+
 function customAlert(message, type = "success", closeModal = false) {
   const overlay = document.createElement("div");
-  overlay.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;justify-content:center;align-items:center;z-index:9999;";
-  
+  overlay.style.cssText =
+    "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;justify-content:center;align-items:center;z-index:9999;";
+
   const buttonColor = type === "success" ? "#198754" : "#dc3545";
-  
+
   const box = document.createElement("div");
-  box.style.cssText = "background:#fff;padding:2vw;border-radius:5px;text-align:center;min-width:40vw;box-shadow:0 5px 15px rgba(0,0,0,0.3);";
+  box.style.cssText =
+    "background:#fff;padding:2vw;border-radius:5px;text-align:center;min-width:40vw;box-shadow:0 5px 15px rgba(0,0,0,0.3);";
   box.innerHTML = `
     <p style="font-family:sans-serif;font-size:16px;font-weight:600;">${message}</p>
     <button id="ok-btn" style="background:${buttonColor};border:none;padding:8px 16px;border-radius:6px;color:white;font-weight:bold;cursor:pointer;">OK</button>
   `;
-  
+
   overlay.appendChild(box);
   document.body.appendChild(overlay);
-  
+
   document.getElementById("ok-btn").addEventListener("click", () => {
     overlay.remove();
     if (closeModal) $("#modal").hide();
   });
 }
 function showPdf(button) {
-  const row = JSON.parse(button.getAttribute('data-row'));
+  const row = JSON.parse(button.getAttribute("data-row"));
   console.log(row);
-  const id =  row.idEquipementInst;
+  const id = row.idEquipementInst;
   console.log("📄 Génération du PDF pour l'équipement ID:", id);
 
   // Création du modal si pas déjà présent
@@ -1048,4 +1234,10 @@ function showPdf(button) {
 function closePdfModal() {
   document.getElementById("pdfModal").style.display = "none";
 }
-document.addEventListener("DOMContentLoaded", initEquipementProprietaireTable,updateDetailsProprietaire,updateDetailsFicheValues,);
+
+document.addEventListener(
+  "DOMContentLoaded",
+  initEquipementProprietaireTable,
+  updateDetailsProprietaire,
+  updateDetailsFicheValues
+);

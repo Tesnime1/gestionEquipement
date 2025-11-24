@@ -25,7 +25,7 @@ public class EquipementInstance {
     private boolean scanner=false;
    
 
-    // ⚡ Relations
+    //  Relations
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipement_id", nullable = false)
     @JsonIgnore  // ✅ Le type d'équipement n'est pas sérialisé

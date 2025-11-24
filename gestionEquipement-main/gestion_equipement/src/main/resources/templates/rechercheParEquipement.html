@@ -4,7 +4,7 @@
       layout:decorate="~{sideBarMenu}"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">  
+    <link rel="stylesheet" th:href="@{/css/style.css}">  
     <title>recherche </title>
 </head>
 <body>
@@ -37,8 +37,8 @@
 
     </div>
     <style>.dataTables_filter {display: none !important;}</style>
-    <script src="/js/toggleMenu.js"></script>
-    <script src="/js/afficheRecherche.js"></script>
+    <script th:src="@{/js/toggleMenu.js}"></script>
+    <script th:src="@{/js/afficheRecherche.js}"></script>
    
 </section>
 </body>

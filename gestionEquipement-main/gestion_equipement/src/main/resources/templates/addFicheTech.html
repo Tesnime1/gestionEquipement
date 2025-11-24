@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/login.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
     <title>Fiche Technique</title>
-</head>
-<body>
-<div class="container-add">
-    <form class="form-add" id="addFichetech"  autocomplete="off">
-        
-        <label>Equipement:</label>
-        <select name="equipement" id="equipement-select" required>
+  </head>
+  <body>
+    <div class="container-add">
+      <form class="form-add" id="addFichetech" autocomplete="off">
+        <div class="form-div">
+          <label>Equipement:</label>
+          <select name="equipement" id="equipement-select" required>
             <option value="">⏳ Chargement des équipements...</option>
-        </select>
-
-        <label>Libellé de la fiche:</label>
-        <input type="text" name="libelle" placeholder="Ex: Marque,Taille..." required>
-
-        <div id="fiche-container">
+          </select>
         </div>
 
-        <button type="button" id="add-caracteristique-btn" >+ Ajouter caractéristique</button>
-        <br><br>
-        <button type="submit"><img src="/images/ajouterb.png" alt="">Ajouter Fiche Technique</button>
-    </form>
-</div>
+        <div class="form-div">
+          <label>Libellé de la fiche:</label>
+          <input
+            type="text"
+            name="libelle"
+            placeholder="Ex: Marque,Taille..."
+            required />
+        </div>
+        <div id="fiche-container"></div>
 
-<!--  Assurez-vous que jQuery est chargé avant votre script -->
-<script src="/js/formAdd.js"></script>
+        <button type="button" id="add-caracteristique-btn">
+          + Ajouter caractéristique
+        </button>
+        <br /><br />
+        <button type="submit">
+          <img th:src="@{/images/ajouterb.png}" alt="" />Ajouter Fiche Technique
+        </button>
+      </form>
+    </div>
 
-
-</body>
+    <!--  Assurez-vous que jQuery est chargé avant votre script -->
+    <script th:src="@{/js/formAdd.js}"></script>
+  </body>
 </html>

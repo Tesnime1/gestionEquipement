@@ -26,24 +26,37 @@
           </select>
         </div>
         <input type="hidden" name="scanner" id="scanner-hidden" value="false" />
-        <div class="form-div">
-          <label for="nomProprietaire-select">Propriétaire :</label>
-          <!-- ⚡ Select qui sera rempli dynamiquement -->
-          <select name="nomProprietaire" id="nomProprietaire-select" required>
-            <option value="">⏳ Chargement des proprietaires..</option>
-          </select>
-        </div>
 
-        <input type="hidden" name="matricule" id="matricule-hidden" />
-        <input type="hidden" name="nom" id="nom-hidden" />
-        <input type="hidden" name="prenom" id="prenom-hidden" />
-
-        <div class="proprietaireDetailInput" id="proprietaire-details">
-          <input type="text" id="direction" name="direction" readonly />
-          <input type="text" id="departement" name="departement" readonly />
-          <input type="text" id="fonction" name="fonction" readonly />
-          <input type="text" id="unite" name="unite" readonly />
-        </div>
+        <input
+          type="hidden"
+          name="matricule"
+          id="matricule-hidden"
+          value="001" />
+        <input
+          type="hidden"
+          name="nom"
+          id="nom-hidden"
+          value="département informatique" />
+        <input type="hidden" name="prenom" id="prenom-hidden" value="" />
+        <input
+          type="hidden"
+          id="direction"
+          name="direction"
+          value="direction informatique"
+          readonly />
+        <input
+          type="text"
+          id="departement"
+          name="departement"
+          value="département informatique"
+          readonly />
+        <input type="hidden" id="fonction" name="fonction" value="" readonly />
+        <input
+          type="hidden"
+          id="unite"
+          name="unite"
+          value="unite informatique"
+          readonly />
 
         <button type="submit">Ajouter</button>
       </form>

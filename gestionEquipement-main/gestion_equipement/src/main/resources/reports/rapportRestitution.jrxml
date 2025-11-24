@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rapportRestitution" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="aaec6a47-616f-4bbe-8743-8604f00e2212">
+	<subDataset name="Dataset1" uuid="6634c7eb-e37c-4204-bebe-d03e967e3470">
+		<parameter name="libelleFiche" class="java.lang.String"/>
+		<parameter name="valeur" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<parameter name="dateModification" class="java.util.Date"/>
+	<parameter name="equipement" class="java.lang.String"/>
+	<parameter name="ancienProprietaire" class="java.lang.String"/>
+	<parameter name="listeCaracteristique" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="62" splitType="Stretch">
+			<textField>
+				<reportElement x="179" y="20" width="186" height="30" uuid="68538b92-e3c6-431b-a8aa-1f80a387a7f7"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Document de restitution"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="273" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="200" height="30" uuid="03ccf304-a23b-49bd-8e46-3223744086d2"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Attestation de restitution"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="210" width="250" height="30" uuid="987095c0-3453-4904-af2b-f5a73b0a1238"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Signature utilisateur :....................................]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="30" width="544" height="139" uuid="1c1ca662-faf0-4e75-b18e-45b9034bf59e">
+					<property name="net.sf.jasperreports.style.markup" value="html"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<html>Je soussigné(e) <b>" 
+ + $P{ancienProprietaire} 
++ "</b> certifie avoir restitué l'équipement <b>" 
++ $P{equipement} 
++ "<br><br></b> avec les caractéristiques : <b><br><br>" 
++ $P{listeCaracteristique}+ "</b><br><br> le " 
++ $P{dateModification} 
++ ".</html>"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="243" width="250" height="30" uuid="31f72471-0649-4fcc-ae59-0f22cdef532e"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Signature IT :.............................]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="74" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

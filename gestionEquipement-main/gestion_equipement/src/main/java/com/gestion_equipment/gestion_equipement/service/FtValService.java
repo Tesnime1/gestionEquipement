@@ -11,6 +11,7 @@ import com.gestion_equipment.gestion_equipement.dto.FicheTechValeurDTO;
 import com.gestion_equipment.gestion_equipement.dto.ProprietaireEquipementDTO;
 import com.gestion_equipment.gestion_equipement.model.EquipementInstance;
 import com.gestion_equipment.gestion_equipement.model.FicheTech_valeur;
+import com.gestion_equipment.gestion_equipement.model.FicheTechnique;
 import com.gestion_equipment.gestion_equipement.repository.FicheTechValeur_Repo;
 
 
@@ -61,28 +62,29 @@ public List<FicheTechValeurDTO> getFichesAvecValeurByEquipement(Long idEquipemen
     return new ArrayList<>(map.values());
 }
 
-public List<FicheTechValeurDTO> getFichesByEquipementInstance(Long idEquipementInstance) {
-        List<FicheTech_valeur> valeurs = ficheValRepo.findByEquipementInstance_Id(idEquipementInstance);
-        
-        return valeurs.stream()
-            .map(v -> {
-                FicheTechValeurDTO dto = new FicheTechValeurDTO();
-                dto.setIdValeur(v.getIdFtvaleur());
-                dto.setValeur(v.getValeur() != null ? v.getValeur() : "");
-                
-                // Gérer le cas où ficheTechnique peut être null
-                if (v.getFicheTechnique() != null) {
-                    dto.setLibelleFiche(v.getFicheTechnique().getLibelle());
-                    dto.setFicheTechId(v.getFicheTechnique().getIdFicheTechnique()); // Adaptez selon votre entité
-                } else {
-                    dto.setLibelleFiche("Non défini");
-                    dto.setFicheTechId(null);
-                }
-                
-                return dto;
-            })
-            .collect(Collectors.toList());
-    }
+public List<FicheTechValeurDTO> getFichesByEquipementInstance(Long idInstance) {
+    List<Object[]> rows = ficheValRepo.findAllFichesWithValeur(idInstance);
+
+    return rows.stream().map(r -> {
+        FicheTechnique fiche = (FicheTechnique) r[0];
+        FicheTech_valeur valeur = (FicheTech_valeur) r[1];
+
+        FicheTechValeurDTO dto = new FicheTechValeurDTO();
+        dto.setFicheTechId(fiche.getIdFicheTechnique());
+        dto.setLibelleFiche(fiche.getLibelle());
+
+        if (valeur != null) {
+            dto.setIdValeur(valeur.getIdFtvaleur());
+            dto.setValeur(valeur.getValeur());
+        } else {
+            dto.setIdValeur(null);
+            dto.setValeur(""); // vide
+        }
+
+        return dto;
+    }).toList();
+}
+
 
 }
 

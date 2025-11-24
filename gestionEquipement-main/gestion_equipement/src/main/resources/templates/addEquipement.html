@@ -1,35 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/login.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
     <title>equipement</title>
-</head>
-<body>
-<div class="container-add">
-<form class="form-add" id="addEquipementform"  autocomplete="off">
-  <label>Nom de l'equipement :</label>
-  <input type="text" name="libelle" required>
-  <div class="grp-btn">
-    <button type="submit"  id="btn-add-equipement"><img src="/images/ajouterb.png" alt=""> Ajouter Equipement</button>
-   <button type="button" onclick="afficherFicheTechnique() "><img src="/images/fleche.png" alt=""> Ajouter une fiche technique </button>
-  </div>
-
-  <div class="container-add-ficheTech" id="fiche-content">
-        <label>Libellé de la fiche:</label>
-        <input type="text" name="fichelibelle" placeholder="Ex: Marque,Taille..." > 
-
-        <div id="fiche-container">
+  </head>
+  <body>
+    <div class="container-add">
+      <form class="form-add" id="addEquipementform" autocomplete="off">
+        <div class="form-div">
+          <label>Nom de l'equipement :</label>
+          <input type="text" name="libelle" required />
+        </div>
+        <div class="grp-btn">
+          <button type="submit" id="btn-add-equipement">
+            <img th:src="@{/images/ajouterb.png}" alt="" /> Ajouter Equipement
+          </button>
+          <button type="button" onclick="afficherFicheTechnique() ">
+            <img th:src="@{/images/fleche.png}" alt="" /> Ajouter une fiche
+            technique
+          </button>
         </div>
 
-        <button type="button" id="add-caracteristique-btn">+ Ajouter caractéristique</button>
-        <br><br>
-        <button type="submit"  id="btn-add-fiche">Ajouter </button> 
-   
-</div>    
-</form> 
-</div>
-<script src="/js/formAdd.js"></script>
-</body>
+        <div class="container-add-ficheTech" id="fiche-content">
+          <label>Libellé de la fiche:</label>
+          <input
+            type="text"
+            name="fichelibelle"
+            placeholder="Ex: Marque,Taille..." />
+
+          <div id="fiche-container"></div>
+
+          <button type="button" id="add-caracteristique-btn">
+            + Ajouter caractéristique
+          </button>
+          <br /><br />
+          <button type="submit" id="btn-add-fiche">Ajouter</button>
+        </div>
+      </form>
+    </div>
+    <script th:src="@{/js/formAdd.js}"></script>
+  </body>
 </html>

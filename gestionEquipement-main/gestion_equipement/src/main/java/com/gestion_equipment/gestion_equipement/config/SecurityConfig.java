@@ -47,7 +47,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/","/session-expired", "/css/**", "/js/**","/images/**","/error","/session/check").permitAll()
-                .requestMatchers("/home","/auth/**","/AfficheAddUser","/scannerr/**","/detailsRapport/**","/scanner/**","/pageAddEquipement","/addEquipement","/detailsReport/**","/Equipements","/FicheTechs","/addFichTech","/addProprietaire","/details","/pageAddFicheTech","/pageAddProprietaire","/equipement/**","/equipementFiches","/Proprietaires","/showProprietaires","/*/proprietaire","/*/ficheTechvalue","/showHistory","/historique","/*/updateFiliale","/*/updateFiche" ,"/pageAddFiliale","/NomIdFiliales","/Filiales","/equipement-instance/*","/test-connexion","/showResearchEquipementFiliale","/showFiliales","/showEquipements","/addFiliale","/addEquipement").hasAnyRole("ADMIN", "UTILISATEUR")
+                .requestMatchers("/home","/pageAddEquipementAuIT","/auth/**","/AfficheAddUser","/scannerr/**","/detailsRapport/**","/equipement/update","/scanner/**","/pageAddEquipement","/addEquipement","/detailsReport/**","/Equipements","/FicheTechs","/addFichTech","/addProprietaire","/details","/pageAddFicheTech","/pageAddProprietaire","/equipement/**","/equipementFiches","/Proprietaires","/showProprietaires","/*/proprietaire","/*/ficheTechvalue","/showHistory","/historique","/*/updateFiliale","/*/updateFiche" ,"/pageAddFiliale","/NomIdFiliales","/Filiales","/equipement-instance/*","/test-connexion","/showResearchEquipementFiliale","/showFiliales","/showEquipements","/addFiliale","/addEquipement").hasAnyRole("ADMIN", "UTILISATEUR")
                 .requestMatchers("/addUser","/Users","/showUsers").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
@@ -64,7 +64,7 @@ public class SecurityConfig {
                 System.out.println("✅ Login réussi : " + username + " avec rôle " + role);
                 request.getSession().setAttribute("role", role);
              // Peu importe le rôle -> redirige vers /home
-             response.sendRedirect("/home");
+             response.sendRedirect(request.getContextPath() +"/home");
             })
         .permitAll()
             )
@@ -89,7 +89,7 @@ public class SecurityConfig {
             response.sendRedirect("/session-expired");
             }
           })
-          )
+      )
 
             .logout(logout -> logout
         .logoutUrl("/logout")

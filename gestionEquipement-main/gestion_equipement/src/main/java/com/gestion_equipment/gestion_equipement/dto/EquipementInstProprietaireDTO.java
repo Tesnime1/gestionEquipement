@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EquipementInstProprietaireDTO {
-   private String nomProprietaire;
-   private String prenomProprietaire;
+   private String proprietaire;
    private String ajouterPar;
    private LocalDateTime dateDajout;
    private  String equipement ;
@@ -25,8 +24,8 @@ public class EquipementInstProprietaireDTO {
    private String direction;
  
      public EquipementInstProprietaireDTO(
-        String nomProprietaire,
-        String prenomProprietaire,
+        String proprietaire,
+     
         String ajouterPar,
         LocalDateTime dateDajout,
         String equipement,
@@ -38,8 +37,8 @@ public class EquipementInstProprietaireDTO {
         String departement,
         String fonction
 ) {
-    this.nomProprietaire = nomProprietaire;
-    this.prenomProprietaire = prenomProprietaire;
+
+    this.proprietaire = proprietaire;
     this.ajouterPar = ajouterPar;
     this.dateDajout = dateDajout;
     this.equipement = equipement;

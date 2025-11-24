@@ -9,16 +9,14 @@
 		<field name="libelleFiche" class="java.lang.String"/>
 		<field name="valeur" class="java.lang.String"/>
 	</subDataset>
-	<parameter name="prenomProprietaire" class="java.lang.String"/>
-	<parameter name="nomProprietaire" class="java.lang.String"/>
+	<parameter name="proprietaire" class="java.lang.String"/>
 	<parameter name="dateDajout" class="java.util.Date"/>
 	<parameter name="equipement" class="java.lang.String"/>
 	<parameter name="nomFiliale" class="java.lang.String"/>
 	<parameter name="fonction" class="java.lang.String"/>
 	<parameter name="departement" class="java.lang.String"/>
 	<parameter name="direction" class="java.lang.String"/>
-        <parameter name="Dataset1" class="net.sf.jasperreports.engine.JRDataSource"/>
-
+	        <parameter name="Dataset1" class="net.sf.jasperreports.engine.JRDataSource"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -56,65 +54,57 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="109" splitType="Stretch">
+		<band height="82" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="50" height="20" uuid="d1a35e95-e761-4501-9521-35f0ca1d9828"/>
-				<textFieldExpression><![CDATA["Nom :"]]></textFieldExpression>
+				<reportElement x="0" y="0" width="70" height="20" uuid="d1a35e95-e761-4501-9521-35f0ca1d9828"/>
+				<textFieldExpression><![CDATA["Propriétaire :"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="20" width="50" height="20" uuid="d98a43ad-0957-48f2-a644-a3821116e33e"/>
-				<textFieldExpression><![CDATA["Prénom :"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="40" width="60" height="20" uuid="b6938725-d10a-410d-af8f-54bd24fcb338"/>
+				<reportElement x="0" y="20" width="60" height="20" uuid="b6938725-d10a-410d-af8f-54bd24fcb338"/>
 				<textFieldExpression><![CDATA["Fonction :"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="60" width="50" height="20" uuid="eb797cd2-1cca-404c-a33c-6262691bb765"/>
+				<reportElement x="0" y="40" width="50" height="20" uuid="eb797cd2-1cca-404c-a33c-6262691bb765"/>
 				<textFieldExpression><![CDATA["Matériel :"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="230" y="0" width="50" height="20" uuid="aed6a965-9d1b-4c7f-bdd4-3eddacb218b1"/>
+				<reportElement x="300" y="0" width="50" height="20" uuid="aed6a965-9d1b-4c7f-bdd4-3eddacb218b1"/>
 				<textFieldExpression><![CDATA["Filiale :"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="230" y="40" width="70" height="20" uuid="93c8bd6b-d4ce-4dea-926d-0542c639b1d9"/>
+				<reportElement x="260" y="40" width="70" height="20" uuid="93c8bd6b-d4ce-4dea-926d-0542c639b1d9"/>
 				<textFieldExpression><![CDATA["Direction :"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="230" y="20" width="80" height="20" uuid="65ec6dcb-8caa-48e3-958f-eca70f08ca5f"/>
+				<reportElement x="260" y="20" width="80" height="20" uuid="65ec6dcb-8caa-48e3-958f-eca70f08ca5f"/>
 				<textFieldExpression><![CDATA["Département :"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="50" y="20" width="160" height="20" uuid="0dde457b-36a3-48c2-b68c-34ab82c24b6a"/>
-				<textFieldExpression><![CDATA[$P{prenomProprietaire}]]></textFieldExpression>
+				<reportElement x="70" y="0" width="219" height="20" uuid="ceb6a654-9e50-4aa3-8adb-f2e29debdc03"/>
+				<textFieldExpression><![CDATA[$P{proprietaire}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="50" y="0" width="160" height="20" uuid="ceb6a654-9e50-4aa3-8adb-f2e29debdc03"/>
-				<textFieldExpression><![CDATA[$P{nomProprietaire}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="50" y="60" width="160" height="20" uuid="d772188f-ec11-4fea-9592-5f78aef17afa"/>
+				<reportElement x="50" y="40" width="160" height="20" uuid="d772188f-ec11-4fea-9592-5f78aef17afa"/>
 				<textFieldExpression><![CDATA[$P{equipement}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="60" y="40" width="150" height="20" uuid="52e11de2-5345-4a73-8586-5c3d8f5bc495"/>
+				<reportElement x="60" y="20" width="150" height="20" uuid="52e11de2-5345-4a73-8586-5c3d8f5bc495"/>
 				<textFieldExpression><![CDATA[$P{fonction}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="280" y="0" width="200" height="20" uuid="8c1ae6f5-3ab0-430b-8aa7-5ad808476f7d"/>
+				<reportElement x="350" y="0" width="200" height="20" uuid="8c1ae6f5-3ab0-430b-8aa7-5ad808476f7d"/>
 				<textFieldExpression><![CDATA[$P{nomFiliale}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="310" y="20" width="170" height="20" uuid="00c9e465-23e2-4490-93b1-8a21d3f6b241"/>
+				<reportElement x="340" y="20" width="170" height="20" uuid="00c9e465-23e2-4490-93b1-8a21d3f6b241"/>
 				<textFieldExpression><![CDATA[$P{departement}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="300" y="40" width="180" height="20" uuid="a913f3e9-048a-4bef-9136-37bff8cee7c3"/>
+				<reportElement x="330" y="40" width="180" height="20" uuid="a913f3e9-048a-4bef-9136-37bff8cee7c3"/>
 				<textFieldExpression><![CDATA[$P{direction}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="80" width="196" height="22" uuid="70c51397-26cf-47f7-b35c-361ce62a3943"/>
+				<reportElement x="0" y="60" width="196" height="22" uuid="70c51397-26cf-47f7-b35c-361ce62a3943"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -129,8 +119,7 @@
 				</reportElement>
 				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Horizontal">
 					<datasetRun subDataset="Dataset1" uuid="aad5b8c7-f1f2-43f2-b9ab-12b03a63d08c">
-						    <dataSourceExpression><![CDATA[$P{Dataset1}]]></dataSourceExpression>
-
+						<dataSourceExpression><![CDATA[$P{Dataset1}]]></dataSourceExpression>
 					</datasetRun>
 					<jr:listContents height="27" width="555">
 						<textField>
@@ -147,7 +136,7 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="22" splitType="Stretch">
+		<band height="47" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
 				<reportElement x="440" y="0" width="100" height="20" uuid="00dbdaca-fc3f-48f4-bf65-816332796e93"/>
@@ -158,7 +147,7 @@
 	<summary>
 		<band height="257" splitType="Stretch">
 			<staticText>
-				<reportElement x="10" y="0" width="544" height="240" uuid="4aa6e936-4635-456a-bd49-329e396ba6f2">
+				<reportElement x="10" y="10" width="544" height="239" uuid="4aa6e936-4635-456a-bd49-329e396ba6f2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left">

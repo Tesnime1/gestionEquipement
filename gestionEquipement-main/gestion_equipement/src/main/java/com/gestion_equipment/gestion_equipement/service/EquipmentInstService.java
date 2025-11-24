@@ -126,6 +126,7 @@ public ProprietaireEquipementDTO updateProprietaire(Long idEquipementInst, Propr
 
     // 3️ Créer l'historique AVANT modification
     HistoriqueEquipement hist = new HistoriqueEquipement();
+   
     hist.setEquipementInstance(instance);
     hist.setUtilisateur(utilisateur);
     hist.setDateModification(LocalDateTime.now());
@@ -143,9 +144,9 @@ public ProprietaireEquipementDTO updateProprietaire(Long idEquipementInst, Propr
     }
     
     // Sauvegarder les NOUVELLES valeurs
-    hist.setNouveauProprietaire(dto.getNomProprietaire());
+    hist.setNouveauProprietaire(dto.getNomProprietaire() + " " + dto.getPrenomProprietaire());
     hist.setModifiePar(username);
-    
+     hist.setMotif(dto.getMotif());
     historiqueEquipementRepo.save(hist);
 
     // 4️ Mettre à jour l'équipement INSTANCE
@@ -156,7 +157,8 @@ public ProprietaireEquipementDTO updateProprietaire(Long idEquipementInst, Propr
     instance.setDirection(dto.getDirection());
     instance.setFonction(dto.getFonction());
     instance.setUnite(dto.getUnite());
-   instance.setScanner(false);   
+   instance.setScanner(false);  
+  instance.setDateCreation(LocalDateTime.now());
     equipementInstrepo.save(instance);
 
     // 5️ Retourner le DTO de réponse
@@ -180,20 +182,57 @@ public ProprietaireEquipementDTO updateProprietaire(Long idEquipementInst, Propr
 
 @Transactional
 public List<FicheTechValeurDTO> updateFicheTechValeurs(Long idEquipementInst, List<FicheTechValeurDTO> valeurs) {
+
     List<FicheTechValeurDTO> result = new ArrayList<>();
+
     if (valeurs != null) {
+
         for (FicheTechValeurDTO v : valeurs) {
-            ficheTechValeurRepo.findById(v.getIdValeur()).ifPresent(val -> {
+
+            if (v.getIdValeur() == null) {
+                // ------------------ CREATE ------------------
+                FicheTech_valeur newVal = new FicheTech_valeur();
+                newVal.setValeur(v.getValeur());
+
+                // NOT NULL obligations
+                newVal.setFicheTechnique(
+                    ficheTechRepo.getReferenceById(v.getFicheTechId())
+                );
+
+                newVal.setEquipementInstance(
+                    equipementInstrepo.getReferenceById(idEquipementInst)
+                );
+
+                ficheTechValeurRepo.save(newVal);
+
+                // DTO retour
+                FicheTechValeurDTO dtoNew = new FicheTechValeurDTO();
+                dtoNew.setIdValeur(newVal.getIdFtvaleur());
+                dtoNew.setValeur(newVal.getValeur());
+                dtoNew.setLibelleFiche(newVal.getFicheTechnique().getLibelle());
+                dtoNew.setFicheTechId(newVal.getFicheTechnique().getIdFicheTechnique());
+
+                result.add(dtoNew);
+
+            } else {
+                // ------------------ UPDATE ------------------
+                FicheTech_valeur val = ficheTechValeurRepo.findById(v.getIdValeur())
+                    .orElseThrow(() -> new RuntimeException("Valeur introuvable : " + v.getIdValeur()));
+
                 val.setValeur(v.getValeur());
                 ficheTechValeurRepo.save(val);
-                // Reconstruire DTO mis à jour
-                FicheTechValeurDTO updated = new FicheTechValeurDTO();
-                updated.setIdValeur(val.getIdFtvaleur());
-                updated.setValeur(val.getValeur());
-                updated.setLibelleFiche(val.getFicheTechnique().getLibelle());
-                result.add(updated);
-            });
-        }}
+
+                FicheTechValeurDTO dtoUpdated = new FicheTechValeurDTO();
+                dtoUpdated.setIdValeur(val.getIdFtvaleur());
+                dtoUpdated.setValeur(val.getValeur());
+                dtoUpdated.setLibelleFiche(val.getFicheTechnique().getLibelle());
+                dtoUpdated.setFicheTechId(val.getFicheTechnique().getIdFicheTechnique());
+
+                result.add(dtoUpdated);
+            }
+        }
+    }
+
     return result;
 }
 

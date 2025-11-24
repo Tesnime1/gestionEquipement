@@ -34,7 +34,8 @@ List<EquipementInstFilialeDTO> findDetailsInstByFilialeId(@Param("filialeId") Lo
         e.libelle,
         u.nom,
         ei.dateCreation,
-        ei.scanner
+        ei.scanner,
+        null
       
     )
     FROM EquipementInstance ei
@@ -63,10 +64,22 @@ List<ProprietaireEquipementDTO> findProprietairesAvecFiltrageValeurs(
         @Param("valeurs") List<String> valeurs,
         @Param("nbValeurs") long nbValeurs
 );
-  @Query("SELECT new com.gestion_equipment.gestion_equipement.dto.EquipementInstProprietaireDTO(" +
-           "i.nom, i.prenom, i.utilisateur.nom, i.dateCreation, i.equipement.libelle, i.idEquipementInstance,i.matricule,i.filiale.nomFiliale, i.scanner ,i.direction,i.departement,i.fonction) " +
-           "FROM EquipementInstance i")
-    List<EquipementInstProprietaireDTO> findDetailsInst();
+@Query("SELECT new com.gestion_equipment.gestion_equipement.dto.EquipementInstProprietaireDTO(" +
+       "CONCAT(i.nom, ' ', i.prenom), " +
+       "i.utilisateur.nom, " +
+       "i.dateCreation, " +
+       "i.equipement.libelle, " +
+       "i.idEquipementInstance, " +
+       "i.matricule, " +
+       "i.filiale.nomFiliale, " +
+       "null, " +  
+       "i.scanner, " +
+       "i.fonction, " +
+       "i.departement, " +
+       "i.direction) " +
+       "FROM EquipementInstance i")
+List<EquipementInstProprietaireDTO> findDetailsInst();
+
 
 
 }

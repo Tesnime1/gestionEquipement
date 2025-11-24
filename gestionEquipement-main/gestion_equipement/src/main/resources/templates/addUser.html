@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/login.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
     <title>Add user</title>
-</head>
-<body>
-<div class="container-add">
-  <form id="addAdmin" class="form-add"  autocomplete="off">
+  </head>
+  <body>
+    <div class="container-add">
+      <form id="addAdmin" class="form-add" autocomplete="off">
         <label for="">nom d'utilisateur:</label>
-        <input type="text" name="nom" required>
+        <input type="text" name="nom" required />
         <label for="">mot de passe :</label>
-        <input type="password" name="password" required>
+        <input type="password" name="password" required />
         <label for="">role :</label>
         <select name="role" id="">
-            <option value="ADMIN">ADMIN</option>
-            <option value="UTILISATEUR">UTILISATEUR</option>
+          <option value="ADMIN">ADMIN</option>
+          <option value="UTILISATEUR">UTILISATEUR</option>
         </select>
         <button type="submit">Ajouter</button>
-  </form>
-</div>
-  <script src="/js/formAdd.js">
-  </script> 
-</body>
+      </form>
+    </div>
+    <script th:src="@{/js/formAdd.js}"></script>
+  </body>
 </html>
