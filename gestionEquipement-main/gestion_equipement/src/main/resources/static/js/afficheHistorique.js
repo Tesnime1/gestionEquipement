@@ -124,6 +124,7 @@ function initEquipementHistoriqueTable() {
       { data: "ancienProprietaire" },
       { data: "nouveauProprietaire" },
       { data: "modifiePar" },
+      { data: "motif" },
       {
         data: "dateModification",
         render: function (data) {

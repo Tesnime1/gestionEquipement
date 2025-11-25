@@ -72,8 +72,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false)
-                // ⚠️ NE PAS mettre invalidSessionUrl ni expiredUrl
-                // On va gérer ça avec un handler personnalisé
+               
             )
         .exceptionHandling(exception -> exception
         .authenticationEntryPoint((request, response, authException) -> {

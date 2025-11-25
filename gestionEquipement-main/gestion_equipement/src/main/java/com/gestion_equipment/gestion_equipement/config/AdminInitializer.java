@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 import com.gestion_equipment.gestion_equipement.model.Utilisateur;
 import com.gestion_equipment.gestion_equipement.repository.Utilisateur_Repo;
-
+// Crée un objet de cette classe et ajoute-le dans le conteneur Spring
 @Component
 public class AdminInitializer implements CommandLineRunner {
-    
+    // exécuter du code automatiquement au démarrage de l’application
     private final Utilisateur_Repo utilisateur_Repo;
     private final PasswordEncoder passwordEncoder;
     

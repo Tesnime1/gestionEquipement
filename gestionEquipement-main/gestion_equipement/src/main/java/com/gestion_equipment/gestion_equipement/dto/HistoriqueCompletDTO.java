@@ -3,8 +3,6 @@ package com.gestion_equipment.gestion_equipement.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
-
 public class HistoriqueCompletDTO {
     private String ancienProprietaire;
    
@@ -19,8 +17,8 @@ public class HistoriqueCompletDTO {
     private LocalDateTime dateDajout;
     private Long idHistoriqueEquipement;
     private List<FicheTechValeurDTO> valeurs;
+    private String motif;
   
-
     public HistoriqueCompletDTO(String ancienProprietaire,
                            
                             String ancienneMatricule,
@@ -55,7 +53,7 @@ public class HistoriqueCompletDTO {
     public HistoriqueCompletDTO(String ancienProprietaire2,
             String nouveauProprietaire2, String modifiePar2, LocalDateTime dateModification2,
             LocalDateTime ancienneDate2, Long idEquipementInst2, String ajouterPar2, Long idHistoriqueEquipement2, String equipement2,
-            LocalDateTime dateDajout2) {
+            LocalDateTime dateDajout2,String motif) {
                 this.ancienProprietaire=ancienProprietaire2;
         this.nouveauProprietaire = nouveauProprietaire2;
         this.modifiePar = modifiePar2;
@@ -66,9 +64,7 @@ public class HistoriqueCompletDTO {
         this.ajouterPar = ajouterPar2;
         this.dateDajout = dateDajout2;
         this.idHistoriqueEquipement=idHistoriqueEquipement2;
-      
-
-
+        this.motif=motif;
         
     }
 
@@ -135,6 +131,13 @@ public class HistoriqueCompletDTO {
     }
     public void setIdHistoriqueEquipement(Long idHistoriqueEquipement) {
         this.idHistoriqueEquipement = idHistoriqueEquipement;
+    }
+       public String getMotif() {
+        return motif;
+    }
+
+    public void setMotif(String motif) {
+        this.motif = motif;
     }
 
 }

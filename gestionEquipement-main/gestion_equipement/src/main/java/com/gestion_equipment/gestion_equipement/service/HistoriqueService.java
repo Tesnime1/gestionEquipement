@@ -31,7 +31,8 @@ public List<HistoriqueCompletDTO> getAllHistorique() {
                             : null,
                     h.getIdHistoriqueEquipement(),
                     h.getUtilisateur() != null ? h.getUtilisateur().getNom() : null,
-                    h.getEquipementInstance() != null ? h.getEquipementInstance().getDateCreation() : null
+                    h.getEquipementInstance() != null ? h.getEquipementInstance().getDateCreation() : null,
+                    h.getMotif()
             ))
             .collect(Collectors.toList());
 }

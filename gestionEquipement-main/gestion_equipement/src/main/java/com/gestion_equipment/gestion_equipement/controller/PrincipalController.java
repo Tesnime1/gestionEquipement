@@ -116,7 +116,7 @@ private EquipementInstance_Repo equipementInstrepo;
     return equipementService.getAllEquipements();
     }
     
-  @GetMapping("/details")
+    @GetMapping("/details")
     public ResponseEntity<List<EquipementInstProprietaireDTO>> getDetailsInstances() {
         List<EquipementInstProprietaireDTO> details = equipmentInstService.getDetailsInstances();
         return ResponseEntity.ok(details);
@@ -235,7 +235,6 @@ private EquipementInstance_Repo equipementInstrepo;
         return ResponseEntity.ok(updated);
     }
     
-  
     @GetMapping("/equipement-instance/{idEquipementInstance}")
     public ResponseEntity<List<FicheTechValeurDTO>> getFichesByEquipementInstance(
             @PathVariable Long idEquipementInstance) {
@@ -246,7 +245,8 @@ private EquipementInstance_Repo equipementInstrepo;
         
         return ResponseEntity.ok(fiches);
     }
-       /*** Teste la connexion à une filiale* POST /api/filiales/test-connexion*/
+      
+    /*** Teste la connexion à une filiale* POST /api/filiales/test-connexion*/
     @PostMapping("/test-connexion")
     public ResponseEntity<?> testerConnexion(@RequestBody Filiale filiale) {
         boolean success = connexionDB.testerConnexion(filiale);
@@ -260,9 +260,10 @@ private EquipementInstance_Repo equipementInstrepo;
                 .body("Échec de la connexion. Vérifiez les paramètres.");
         }
     }
-      /*** Récupère les propriétaires d'une filiale * GET /api/filiales/1/proprietaires*/
-    @GetMapping(value="/{id}/proprietaires",produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getEmployes(@PathVariable Long id) {
+
+    /*** Récupère les propriétaires d'une filiale * GET /api/filiales/1/proprietaires*/
+@GetMapping(value="/{id}/proprietaires",produces=MediaType.APPLICATION_JSON_VALUE)
+public ResponseEntity<?> getEmployes(@PathVariable Long id) {
         return filialeRepo.findById(id)
             .<ResponseEntity<?>>map(filiale -> {
                 try {
@@ -276,8 +277,8 @@ private EquipementInstance_Repo equipementInstrepo;
             .orElseGet(() -> ResponseEntity.notFound().build());
     }
     
-    @GetMapping("/details-filiale/{filialeId}")
-    public ResponseEntity<List<EquipementInstFilialeDTO>> getDetailsByFiliale(
+@GetMapping("/details-filiale/{filialeId}")
+public ResponseEntity<List<EquipementInstFilialeDTO>> getDetailsByFiliale(
             @PathVariable Long filialeId) {
         try {
             List<EquipementInstFilialeDTO> details = equipmentInstService.getDetailsByFiliale(filialeId);
@@ -324,7 +325,8 @@ public ResponseEntity<EquipementInstance> addProprietaire(@RequestBody Equipemen
     EquipementInstance saved = equipmentInstService.createProprietaireWithValeurs(dto, principal.getName());
         return ResponseEntity.ok(saved);
     }
- // recuperer le document scanner depui le D:/rapports_scannes
+ 
+// recuperer le document scanner depui le D:/rapports_scannes
 @GetMapping("/scanner/{id}")
 public ResponseEntity<Resource> getScannedDocument(@PathVariable Long id) throws IOException {
     
@@ -344,7 +346,8 @@ System.out.println("🔍 Vérification du fichier : " + filePath.toAbsolutePath(
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + nomFichier + "\"")
             .body(resource);
 }
-//pour generer le document 
+
+//pour generer le document d'attribution d'un equipement
 @GetMapping("/scannerr/{id}")
 public  void getDetailReport(@PathVariable Long id , HttpServletResponse response) throws JRException, IOException {
     // 1️⃣ Récupérer les données de ton DTO
@@ -391,6 +394,7 @@ public  void getDetailReport(@PathVariable Long id , HttpServletResponse respons
     JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 }
 
+//pour generer le document de restitution d'un equipement
 @GetMapping("/documentRestitution/{id}")
 public void getDetailReportRestitution(@PathVariable Long id, HttpServletResponse response)
         throws JRException, IOException {
@@ -535,8 +539,9 @@ public ResponseEntity<List<FicheTechnique>> getFichesByEquipement(@PathVariable 
 public ResponseEntity<EquipementFichesDTO> updateEquipement(@RequestBody EquipementFichesDTO dto) {
     return ResponseEntity.ok(ficheTechService.updateEquipementAndFiches(dto));
 }
-    @GetMapping("/historique/{idEquipementInstance}")
-    public List<HistoriqueCompletDTO> getHistoriqueParEquipementInstance(@PathVariable Long idEquipementInstance) {
+
+@GetMapping("/historique/{idEquipementInstance}")
+public List<HistoriqueCompletDTO> getHistoriqueParEquipementInstance(@PathVariable Long idEquipementInstance) {
         return historiqueService.getHistoriqueByEquipementInstance(idEquipementInstance);
     }
 

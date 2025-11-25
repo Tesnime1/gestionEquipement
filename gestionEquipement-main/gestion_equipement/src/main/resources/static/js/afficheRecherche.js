@@ -249,7 +249,7 @@ function initTableSearchEquipement() {
           <th>Ajouté Par</th>
           <th>Date d'ajout</th>
           <th>Valeurs</th>
-          <th>historique</th>
+          <th>Historique</th>
         </tr>
       </thead>
     </table>

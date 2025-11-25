@@ -45,7 +45,8 @@ public class pageController {
             session.invalidate();}
              return ResponseEntity.ok().build();
         }
-     @GetMapping("/home")
+    
+    @GetMapping("/home")
      public String homepage() {
      return "sideBarMenu";
      }
@@ -64,6 +65,7 @@ public class pageController {
     }
     return "auth";
 }
+    
     @GetMapping("/session-expired")
     public String showSessionExpiredPage() {
     return "sessionExpired"; // Un template Thymeleaf simple avec ton message ou un script pour afficher le popup
@@ -83,10 +85,12 @@ public class pageController {
     public String getPageshowProprietaires() {    
     return "afficheProprietaire";
     }
+   
     @GetMapping("/showUsers")
     public String getPageshowUsers() {
       return "afficheUser";
     }
+   
     @GetMapping("/pageAddEquipement")
     public String getPageAddequipement() {
     return "addEquipement";
@@ -107,7 +111,7 @@ public class pageController {
     public String getPageAddProprietaire() {
     return "addProprietaire";
     }
-        @GetMapping("/pageAddEquipementAuIT")
+    @GetMapping("/pageAddEquipementAuIT")
     public String getPageAddEquipementAuIT() {
     return "addEquipementAuIT";
     }
