@@ -1,33 +1,33 @@
 function toggleMenuGlobal() {
-  // Quand la souris entre sur un lien principal du menu
-  $(document).on("mouseenter", "aside nav > a", function () {
-    const $trigger = $(this); // le lien (ex: .filiale)
+  // Quand on clique sur un lien principal
+  $(document).on("click", "aside nav > a", function (e) {
+    e.preventDefault(); // empêcher le navigateur de suivre un lien vide
+
+    const $trigger = $(this);
     const submenuClass = getSubmenuClass($trigger);
     const $submenu = submenuClass ? $(submenuClass) : null;
 
-    // Fermer tous les autres sous-menus
-    $("aside nav div").not($submenu).stop(true, true).slideUp();
-
-    // Ouvrir le sous-menu lié
-    if ($submenu && $submenu.length) {
-      $submenu
-        .stop(true, true)
-        .slideDown(600, function () {
-          $(this).css({
-            display: "flex",
-            "flex-direction": "column"
-          });
-        });
+    // Si le lien n'a pas de sous-menu (ex: logout), ne rien faire
+    if (!$submenu || !$submenu.length) {
+      return;
     }
-  });
 
-  // Quand la souris quitte un sous-menu => le refermer
-  $(document).on("mouseleave", "aside nav div", function () {
-    $(this).stop(true, true).slideUp(600);
+    // Fermer tous les autres menus
+    $("aside nav div").not($submenu).slideUp(300);
+
+    // Toggle (ouvrir/fermer)
+    $submenu.slideToggle(300, function () {
+      if ($(this).is(":visible")) {
+        $(this).css({
+          display: "flex",
+          "flex-direction": "column",
+        });
+      }
+    });
   });
 }
 
-// Fonction utilitaire pour lier menu principal ↔ sous-menu
+// Fonction utilitaire inchangée
 function getSubmenuClass($trigger) {
   if ($trigger.hasClass("filiale")) return ".detailF";
   if ($trigger.hasClass("equipement")) return ".detailE";
@@ -35,4 +35,7 @@ function getSubmenuClass($trigger) {
   if ($trigger.hasClass("recherche")) return ".detailR";
   return null;
 }
-$(document).ready(function () {toggleMenuGlobal();});
+
+$(document).ready(function () {
+  toggleMenuGlobal();
+});

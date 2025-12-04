@@ -16,25 +16,8 @@ public class HistoriqueService {
         this.ficheTechValeurRepo=ficheTechValeurRepo;
     }
 public List<HistoriqueCompletDTO> getAllHistorique() {
-    return historiqueEquipementRepo.findAll()
-            .stream()
-            .map(h -> new HistoriqueCompletDTO(
-                    h.getAncienNomProprietaire()+" "+h.getAncienPrenomProprietaire(),
-                   
-                    h.getNouveauProprietaire(),
-                    h.getModifiePar(),
-                    h.getDateModification(),
-                    h.getAncienneDate(),
-                    h.getEquipementInstance() != null ? h.getEquipementInstance().getIdEquipementInstance() : null,
-                    (h.getEquipementInstance() != null && h.getEquipementInstance().getEquipement() != null)
-                            ? h.getEquipementInstance().getEquipement().getLibelle()
-                            : null,
-                    h.getIdHistoriqueEquipement(),
-                    h.getUtilisateur() != null ? h.getUtilisateur().getNom() : null,
-                    h.getEquipementInstance() != null ? h.getEquipementInstance().getDateCreation() : null,
-                    h.getMotif()
-            ))
-            .collect(Collectors.toList());
+    return historiqueEquipementRepo.getAllHistoriqueDTO();
+          
 }
 
 public HistoriqueCompletDTO getHistoryById(Long id) {

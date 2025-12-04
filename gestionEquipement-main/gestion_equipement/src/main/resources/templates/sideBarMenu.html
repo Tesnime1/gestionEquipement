@@ -25,7 +25,6 @@
     <script th:src="@{/js/dataTables.bootstrap5.min.js}"></script>
     <link th:href="@{/css/fonts.css}" rel="stylesheet" />
     <script th:src="@{/js/dataTables.responsive.min.js}"></script>
-    <script th:src="@{/js/i18n/fr-FR.js}"></script>
     <script th:src="@{/js/session-manager.js}"></script>
   </head>
   <body>
@@ -35,16 +34,18 @@
         <h5>Gestion d'équipement</h5>
         <nav>
           <a class="filiale"
-            ><img th:src="@{/images/service.png}" alt="" /> Filiales</a
-          >
+            ><img th:src="@{/images/service.png}" alt="" /> Filiales
+            <img class="img-Menu" th:src="@{/images/flèche.png}" alt=""
+          /></a>
           <div class="detailF">
             <a th:href="@{/showFiliales}" class="load-page"
               >Afficher la liste des Filiales</a
             >
           </div>
           <a class="equipement"
-            ><img th:src="@{/images/equipement.png}" alt="" /> Équipements</a
-          >
+            ><img th:src="@{/images/equipement.png}" alt="" /> Équipements
+            <img class="img-Menu" th:src="@{/images/flèche.png}" alt=""
+          /></a>
           <div class="detailE">
             <a th:href="@{/showEquipements}" class="load-page">
               Liste des équipements</a
@@ -55,22 +56,24 @@
             <a th:href="@{/showHistory}" class="load-page">Historique</a>
           </div>
           <a class="admins"
-            ><img th:src="@{/images/users.png}" alt="" /> Utilisateurs</a
-          >
+            ><img th:src="@{/images/users.png}" alt="" />Utilisateurs
+            <img class="img-Menu" th:src="@{/images/flèche.png}" alt=""
+          /></a>
           <div class="detailA">
             <a th:href="@{/showUsers}" class="load-page"
               >Afficher les utilisateurs</a
             >
           </div>
           <a class="recherche"
-            ><img th:src="@{/images/recherche.png}" alt="" />Recherche</a
-          >
+            ><img th:src="@{/images/recherche.png}" alt="" />Recherche
+            <img class="img-Menu" th:src="@{/images/flèche.png}" alt=""
+          /></a>
           <div class="detailR">
             <a th:href="@{/showResearchEquipement}" class="load-page"
               >Equipement Par caracteristique</a
             >
           </div>
-          <a href="/logout">Logout</a>
+          <a class="logout" href="/logout">Logout</a>
         </nav>
       </aside>
 

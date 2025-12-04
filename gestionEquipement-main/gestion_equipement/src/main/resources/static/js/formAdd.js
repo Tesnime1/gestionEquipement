@@ -129,7 +129,6 @@ function handleFormSubmission(form, config) {
 
       //  UTILISER LA FONCTION DÉDIÉE pour recharger
       if (config.tableToReload === "#TableEquipement") {
-        console.log("🎯 Rechargement via fonction dédiée");
         reloadEquipementTable();
       } else if (config.tableToReload) {
         console.log(` Rechargement standard pour ${config.tableToReload}`);
@@ -197,12 +196,10 @@ function loadEquipementsInSelect() {
             // Recherche : utiliser une fonction fléchée pour préserver le contexte
             select.removeEventListener("change", handleSearchEquipementChange);
             select.addEventListener("change", handleSearchEquipementChange);
-            console.log("🔗 Listener recherche branché");
           } else {
             // Ajout propriétaire
             select.removeEventListener("change", handleEquipementChange);
             select.addEventListener("change", handleEquipementChange);
-            console.log("🔗 Listener ajout branché");
           }
         }
       });
@@ -345,8 +342,6 @@ function handleEquipementChange(event) {
 }
 // ---- TRAITEMENT SPÉCIAL FICHE TECHNIQUE
 function processFicheTechData2024(form, data) {
-  console.log("🔧 Traitement données addFichetech (format 2024)");
-
   const equipementId = $(form).find('select[name="equipement"]').val();
   const libelles = [];
 
@@ -405,10 +400,7 @@ function removeFiche(button) {
   console.log("🗑️ Suppression caractéristique");
   button.closest(".fiche-item").remove();
 }
-$(document).ready(function () {
-  setupFormHandling();
-  console.log("✅ Gestion des formulaires initialisée");
-});
+
 $(document).on("keydown", "form", function (event) {
   if (event.key === "Enter") {
     event.preventDefault(); // Empêche la soumission
@@ -613,3 +605,7 @@ function setupFilialeChangePourListeEmployes() {
       }
     });
 }
+$(document).ready(function () {
+  setupFormHandling();
+  console.log("✅ Gestion des formulaires initialisée");
+});

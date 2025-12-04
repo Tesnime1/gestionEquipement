@@ -12,8 +12,6 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -28,6 +26,8 @@ import com.gestion_equipment.gestion_equipement.model.*;
 import com.gestion_equipment.gestion_equipement.repository.EquipementInstance_Repo;
 import com.gestion_equipment.gestion_equipement.repository.FilialeRepo;
 import com.gestion_equipment.gestion_equipement.service.*;
+
+import groovyjarjarantlr4.v4.parse.ANTLRParser.sync_return;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRException;
@@ -87,8 +87,8 @@ private EquipementInstance_Repo equipementInstrepo;
     }
 
     @GetMapping("/NomIdFiliales")
-     public ResponseEntity<List<FilialeDTO>> getAllFilialesIdAndNom() {
-        List<FilialeDTO> filiales = filialeService.getAllFilialesIdAndNom();
+     public ResponseEntity<List<FilialeDetailDTO>> getAllFilialesIdAndNom() {
+        List<FilialeDetailDTO> filiales = filialeService.getAllFilialesIdAndNom();
         return ResponseEntity.ok(filiales);
     }
 
@@ -110,12 +110,12 @@ private EquipementInstance_Repo equipementInstrepo;
     Equipement saves = equipementService.creatEquipement(equipement);
     return ResponseEntity.ok(saves);
     }
-   
+
     @GetMapping("/Equipements")
     public List<Equipement> getAllEquipement() {
     return equipementService.getAllEquipements();
     }
-    
+
     @GetMapping("/details")
     public ResponseEntity<List<EquipementInstProprietaireDTO>> getDetailsInstances() {
         List<EquipementInstProprietaireDTO> details = equipmentInstService.getDetailsInstances();
@@ -139,7 +139,7 @@ private EquipementInstance_Repo equipementInstrepo;
     return equipmentInstService.getAllProprietaire();
     }
 
- // Dans votre contrôleur
+    // Dans votre contrôleur
     @GetMapping("/equipementFiches" )
     public List<EquipementFichesDTO> getAllEquipements() {
     return equipementService.getAllEquipementsWithFiches();
@@ -160,8 +160,8 @@ private EquipementInstance_Repo equipementInstrepo;
    
     @GetMapping("/historique")
     public ResponseEntity<List<HistoriqueCompletDTO>> getHistory() {
-      return ResponseEntity.ok( historiqueService.getAllHistorique() );
-     }
+    return ResponseEntity.ok( historiqueService.getAllHistorique() );
+    }
    
     @GetMapping("/ProprietairesParEquipement")
     public List<EquipementInstance> getProprietairesParEquipement(@RequestParam Long equipementId) {
@@ -170,7 +170,7 @@ private EquipementInstance_Repo equipementInstrepo;
    
     @GetMapping("/byEquipement")
     public List<FicheTechValeurDTO> getFichesAvecValeurByEquipement(@RequestParam Long idEquipement) {
-        return ftValeurService.getFichesAvecValeurByEquipement(idEquipement);
+    return ftValeurService.getFichesAvecValeurByEquipement(idEquipement);
     }
     
     @PutMapping("/{id}/updateFiche")

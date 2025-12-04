@@ -19,6 +19,8 @@ function initEquipementTable() {
     autoWidth: false,
     searching: true,
     ordering: true,
+    orderCellsTop: true,
+
     info: false,
     lengthChange: false,
     language: {

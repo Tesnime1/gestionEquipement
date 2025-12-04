@@ -25,7 +25,6 @@ public class EquipementInstProprietaireDTO {
  
      public EquipementInstProprietaireDTO(
         String proprietaire,
-     
         String ajouterPar,
         LocalDateTime dateDajout,
         String equipement,

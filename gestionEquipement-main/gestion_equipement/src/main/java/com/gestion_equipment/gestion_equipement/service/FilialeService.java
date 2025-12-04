@@ -3,9 +3,6 @@ package com.gestion_equipment.gestion_equipement.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import com.gestion_equipment.gestion_equipement.dto.FilialeDTO;
 import com.gestion_equipment.gestion_equipement.dto.FilialeDetailDTO;
 import com.gestion_equipment.gestion_equipement.model.Filiale;
 import com.gestion_equipment.gestion_equipement.model.HistoriqueFiliale;
@@ -13,7 +10,6 @@ import com.gestion_equipment.gestion_equipement.model.Utilisateur;
 import com.gestion_equipment.gestion_equipement.repository.FilialeRepo;
 import com.gestion_equipment.gestion_equipement.repository.HistoriqueFilialeRepo;
 import com.gestion_equipment.gestion_equipement.repository.Utilisateur_Repo;
-
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -50,16 +46,10 @@ private Utilisateur getUtilisateurConnecte() {
 public List<FilialeDetailDTO> getAllFiliales() {
         return filialeRepo.findAllFiliales();
     }
-public List<FilialeDTO> getAllFilialesIdAndNom() {
-        List<Object[]> results = filialeRepo.findIdAndNomFiliale();
-        
-        return results.stream().map(row -> new FilialeDTO(
-                (Long) row[0],      // idFiliale
-                (String) row[1]     // nomFiliale
-           
-            ))
-            .collect(Collectors.toList());
-    }
+public List<FilialeDetailDTO> getAllFilialesIdAndNom() {
+    return filialeRepo.findFilialeDetail();
+}
+
    
 public Filiale updateFiliale(Long id, Filiale newData) {
     // 1️ Récupérer la filiale existante

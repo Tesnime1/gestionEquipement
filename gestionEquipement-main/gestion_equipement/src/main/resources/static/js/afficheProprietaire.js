@@ -63,7 +63,7 @@ function initEquipementProprietaireTable() {
         <button class="btn btn-success btn-sm" 
                 data-row='${JSON.stringify(row).replace(/'/g, "&#39;")}'
                 onclick='showDetailsProprietaire(this)'>
-          Modifier
+          Propriétaire
         </button>`;
         },
       },
@@ -852,11 +852,7 @@ function chargerDetailsFiliale(filialeId, containerSelector) {
       }
 
       const keys = Object.keys(details[0]).filter(
-        (key) =>
-          key !== "filialeId" &&
-          key !== "idFiliale" &&
-          key !== "idfiliale" &&
-          key !== "id"
+        (key) => key !== "filialeId" && key !== "idFiliale"
       );
       console.log("🔑 Clés trouvées:", keys);
 
@@ -908,6 +904,7 @@ function chargerDetailsFiliale(filialeId, containerSelector) {
 function loadFilialesInSelect() {
   // Un seul select à cibler
   const selectFiliale = document.querySelector("#filiale-select");
+  console.log("🏢 Chargement des filiales", selectFiliale);
   if (selectFiliale) {
     selectFiliale.innerHTML =
       '<option value="" > -- Sélectionnez une filiale--</option>';
@@ -921,7 +918,7 @@ function loadFilialesInSelect() {
       // Ajouter les options
       filiales.forEach((filiale) => {
         const option = document.createElement("option");
-        option.value = filiale.idfiliale;
+        option.value = filiale.idFiliale;
         option.textContent = filiale.nomFiliale;
         selectFiliale.appendChild(option);
       });

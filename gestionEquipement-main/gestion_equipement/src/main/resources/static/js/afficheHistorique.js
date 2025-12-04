@@ -4,6 +4,70 @@ let allEquipements = []; // Cache pour les équipements
 let isEquipementSelectListenerAdded = false; // Flag pour éviter les doublons
 let currentFicheEquipementId = null;
 let equipementTableInstance = null;
+function initEquipementHistoriqueTable() {
+  $("#TableEquipementHistorique").DataTable({
+    paging: false,
+    responsive: true, // ✅ tableau adaptable
+    scrollCollapse: true,
+    scrollY: getScrollHeight(),
+    autoWidth: false, // ✅ empêche DataTables de fixer des largeurs figées
+    searching: true,
+    ordering: true,
+    info: false,
+    lengthChange: false,
+    language: {
+      url: "/js/i18n/fr-FR.json",
+    },
+    ajax: {
+      url: "/historique",
+      dataSrc: "",
+      complete: function (xhr) {
+        console.log("📊 Données reçues:", xhr.responseJSON);
+      },
+    },
+    columns: [
+      { data: "ancienProprietaire" },
+      { data: "nouveauProprietaire" },
+      { data: "modifiePar" },
+      { data: "motif" },
+      {
+        data: "dateModification",
+        render: function (data) {
+          return data ? new Date(data).toLocaleDateString("fr-FR") : "—";
+        },
+      },
+      {
+        data: "ancienneDate",
+        render: function (data) {
+          return data ? new Date(data).toLocaleDateString("fr-FR") : "—";
+        },
+      },
+      {
+        data: null,
+        render: function (data, type, row) {
+          return `<button class="btn btn-success btn-sm" 
+                      onclick='showDetailsFicheTechHistoriqueValues(${JSON.stringify(
+                        row
+                      )})'>
+                      FicheTech
+                    </button>`;
+        },
+      },
+      {
+        data: null,
+        render: function (data, type, row) {
+          return `<button class="btn btn-success btn-sm" 
+                       onclick='showPDFRestitution(this)' 
+        data-row='${JSON.stringify(row)}'>
+                      Document Restitution
+                    </button>`;
+        },
+      },
+    ],
+    initComplete: function () {},
+  });
+}
+document.addEventListener("DOMContentLoaded", initEquipementHistoriqueTable);
 function openModalProprietaire(url, defaultNom, title) {
   $("#modal-body").load(url, function () {
     $("#modal").css("display", "flex");
@@ -96,72 +160,6 @@ function showDetailsFicheTechHistoriqueValues(row) {
     },
   });
 }
-function getScrollHeight() {
-  return $(window).height() - 180 + "px";
-}
-function initEquipementHistoriqueTable() {
-  $("#TableEquipementHistorique").DataTable({
-    paging: false,
-    responsive: true, // ✅ tableau adaptable
-    scrollCollapse: true,
-    scrollY: getScrollHeight(),
-    autoWidth: false, // ✅ empêche DataTables de fixer des largeurs figées
-    searching: true,
-    ordering: true,
-    info: false,
-    lengthChange: false,
-    language: {
-      url: "/js/i18n/fr-FR.json",
-    },
-    ajax: {
-      url: "/historique",
-      dataSrc: "",
-      complete: function (xhr) {
-        console.log("📊 Données reçues:", xhr.responseJSON);
-      },
-    },
-    columns: [
-      { data: "ancienProprietaire" },
-      { data: "nouveauProprietaire" },
-      { data: "modifiePar" },
-      { data: "motif" },
-      {
-        data: "dateModification",
-        render: function (data) {
-          return data ? new Date(data).toLocaleDateString("fr-FR") : "—";
-        },
-      },
-      {
-        data: "ancienneDate",
-        render: function (data) {
-          return data ? new Date(data).toLocaleDateString("fr-FR") : "—";
-        },
-      },
-      {
-        data: null,
-        render: function (data, type, row) {
-          return `<button class="btn btn-success btn-sm" 
-                      onclick='showDetailsFicheTechHistoriqueValues(${JSON.stringify(
-                        row
-                      )})'>
-                      Fiche Technique
-                    </button>`;
-        },
-      },
-      {
-        data: null,
-        render: function (data, type, row) {
-          return `<button class="btn btn-success btn-sm" 
-                       onclick='showPDFRestitution(this)' 
-        data-row='${JSON.stringify(row)}'>
-                      Document de restitution
-                    </button>`;
-        },
-      },
-    ],
-    initComplete: function () {},
-  });
-}
 function showPDFRestitution(button) {
   const row = JSON.parse(button.getAttribute("data-row"));
   console.log(row);
@@ -196,8 +194,6 @@ function showPDFRestitution(button) {
 function closePdfModal() {
   document.getElementById("pdfModal").style.display = "none";
 }
-document.addEventListener("DOMContentLoaded", initEquipementHistoriqueTable);
-
 // Événement lors de la sélection d'une filiale
 // Fonction pour charger les employés quand la filiale change
 // Fonction pour initialiser Select2
@@ -470,7 +466,7 @@ function loadFilialesInSelect() {
       // Ajouter les options
       filiales.forEach((filiale) => {
         const option = document.createElement("option");
-        option.value = filiale.idfiliale;
+        option.value = filiale.idFiliale;
         option.textContent = filiale.nomFiliale;
         selectFiliale.appendChild(option);
       });
@@ -702,80 +698,7 @@ function setupEquipementChangeListener() {
   isEquipementSelectListenerAdded = true;
   console.log("✅ Listener équipement attaché");
 }
-function handleEquipementChange(event) {
-  const equipementId = event.target.value;
-  const container = document.getElementById("fiche-valeurs-container");
 
-  console.log("📋 Changement équipement:", equipementId);
-
-  if (!container) {
-    console.error("❌ Container 'fiche-valeurs-container' non trouvé !");
-    return;
-  }
-
-  container.innerHTML = "";
-
-  if (!equipementId || equipementId === "") {
-    container.innerHTML =
-      "<p class='text-muted'>Veuillez sélectionner un équipement</p>";
-    return;
-  }
-
-  container.innerHTML = "<p>🔄 Chargement des fiches techniques...</p>";
-
-  fetch(`/equipement/${equipementId}`, {
-    method: "GET",
-    credentials: "include",
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      return response.json();
-    })
-    .then((fiches) => {
-      if (!fiches || !Array.isArray(fiches) || fiches.length === 0) {
-        container.innerHTML =
-          "<p class='alert alert-warning'>⚠️ Aucune fiche technique trouvée</p>";
-        return;
-      }
-
-      let html = "<div class='fiches-techniques'><h6>Fiches techniques :</h6>";
-
-      fiches.forEach((fiche) => {
-        const ficheId =
-          fiche.id_ficheTechnique || fiche.idFicheTechnique || fiche.id;
-
-        if (!ficheId) {
-          console.error("❌ ID fiche manquant:", fiche);
-          return;
-        }
-
-        html += `
-          <div class="fiche-valeur-item mb-3 p-3 border rounded" data-fiche-id="${ficheId}">
-            <label class="form-label fw-bold">${fiche.libelle}</label>
-            <input type="hidden" name="ficheId_${ficheId}" value="${ficheId}">
-            <input type="text" 
-                   class="form-control" 
-                   name="valeur_${ficheId}" 
-                   placeholder="Entrez la valeur pour ${fiche.libelle}" 
-                   required>
-          </div>
-        `;
-      });
-
-      html += "</div>";
-      container.innerHTML = html;
-
-      console.log("✅ Fiches techniques affichées");
-    })
-    .catch((error) => {
-      console.error("❌ Erreur chargement fiches :", error);
-      container.innerHTML = `
-        <div class="alert alert-danger">
-          <strong>❌ Erreur</strong><br>
-          ${error.message}
-        </div>
-      `;
-    });
+function getScrollHeight() {
+  return $(window).height() - 180 + "px";
 }

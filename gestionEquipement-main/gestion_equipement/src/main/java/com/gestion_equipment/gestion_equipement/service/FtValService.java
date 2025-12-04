@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import com.gestion_equipment.gestion_equipement.dto.FicheTechValeurDTO;
 import com.gestion_equipment.gestion_equipement.dto.ProprietaireEquipementDTO;
@@ -20,16 +18,14 @@ public class FtValService {
  
     private final FicheTechValeur_Repo ficheValRepo;
     public FtValService(FicheTechValeur_Repo ficheValRepo) {
-        this.ficheValRepo = ficheValRepo;
-       
+        this.ficheValRepo = ficheValRepo;   
     }
-public List<FicheTechValeurDTO> getFichesAvecValeurByEquipement(Long idEquipement) {
+    
+    public List<FicheTechValeurDTO> getFichesAvecValeurByEquipement(Long idEquipement) {
     return ficheValRepo.findValeursAvecLibelleByEquipement(idEquipement);
-}
+    }
 
-  
-
-  public List<ProprietaireEquipementDTO> getProprietairesParValeur(Map<String, String> filters) {
+    public List<ProprietaireEquipementDTO> getProprietairesParValeur(Map<String, String> filters) {
     List<FicheTech_valeur> all = ficheValRepo.findAll();
 
     // Regrouper par instance

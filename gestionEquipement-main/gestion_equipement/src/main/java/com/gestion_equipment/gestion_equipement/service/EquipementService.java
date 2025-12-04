@@ -2,7 +2,6 @@ package com.gestion_equipment.gestion_equipement.service;
 
 import com.gestion_equipment.gestion_equipement.dto.EquipementFichesDTO;
 import com.gestion_equipment.gestion_equipement.model.Equipement;
-import com.gestion_equipment.gestion_equipement.model.FicheTechnique;
 import com.gestion_equipment.gestion_equipement.model.Utilisateur;
 import com.gestion_equipment.gestion_equipement.repository.EquipementRepo;
 import com.gestion_equipment.gestion_equipement.repository.Utilisateur_Repo;

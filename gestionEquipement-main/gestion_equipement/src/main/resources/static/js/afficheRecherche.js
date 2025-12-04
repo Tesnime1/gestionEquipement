@@ -19,7 +19,7 @@ function loadFilialesInSelect() {
       // Ajouter les options
       filiales.forEach((filiale) => {
         const option = document.createElement("option");
-        option.value = filiale.idfiliale;
+        option.value = filiale.idFiliale;
         option.textContent = filiale.nomFiliale;
         selectFiliale.appendChild(option);
       });

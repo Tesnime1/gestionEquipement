@@ -21,7 +21,7 @@ aside {
   padding: 10px;
   border-right: 2px solid #dcdcdcf7;
   box-shadow: 0 0 2px rgba(141, 141, 141, 0.2) !important;
-  width: 190px;
+  width: 200px;
   gap: 5vh;
 }
 .mb-2 {
@@ -44,10 +44,19 @@ a {
   padding: 10px;
   text-decoration: none !important;
   color: rgb(20, 20, 20) !important;
-  background-color: #f8f8f877;
+  background-color: #f3f1f177;
 }
+
 .p-4 {
   padding: 0 !important;
+}
+.filiale,
+.equipement,
+.admins,
+.recherche,
+.logout {
+  border-radius: 5px;
+  border: 1px solid rgb(225 225 225 / 33%);
 }
 aside a:hover {
   background-color: #f8f8f877;
@@ -383,11 +392,11 @@ div.dataTables_wrapper div.dataTables_filter {
 /* Empêche le décalage visuel entre head et body du DataTable */
 .dataTables_scrollHeadInner,
 .dataTables_scrollHeadInner table {
-  width: 100% !important;
+  width: 99% !important;
 }
 
 .dataTables_scrollBody table {
-  width: 100% !important;
+  width: 99% !important;
 }
 
 .form-control-sm {
@@ -396,7 +405,11 @@ div.dataTables_wrapper div.dataTables_filter {
   border-radius: var(--bs-border-radius-sm);
 }
 /* ====== TABLEAU ÉQUIPEMENT ADAPTATIF ====== */
-
+.img-Menu {
+  width: 15px;
+  height: 15px;
+  margin-left: auto;
+}
 /* Container du tableau - prend tout l'espace disponible */
 .Table_container {
   flex: 1;
@@ -599,7 +612,7 @@ div.dataTables_wrapper div.dataTables_filter {
 /* Écrans moyens */
 @media (max-width: 1200px) {
   aside {
-    width: 190px;
+    width: 200px;
   }
 
   .menu button {
@@ -611,7 +624,7 @@ div.dataTables_wrapper div.dataTables_filter {
 /* Tablettes */
 @media (max-width: 768px) {
   aside {
-    width: 190px;
+    width: 200px;
     padding: 10px 5px;
   }
 
